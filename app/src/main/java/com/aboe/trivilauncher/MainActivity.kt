@@ -42,6 +42,6 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
 @Composable
 fun GreetingPreview() {
     TriviLauncherTheme {
-        Greeting("Android")
+        Greeting("test")
     }
 }
