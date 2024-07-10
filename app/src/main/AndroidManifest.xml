@@ -3,6 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools">
 
 <!--    <uses-permission android:name="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE"/>-->
+    <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY"/>
+    <uses-permission android:name="android.permission.INTERNET"/>
 
     <application
         android:name=".TriviLauncher"
