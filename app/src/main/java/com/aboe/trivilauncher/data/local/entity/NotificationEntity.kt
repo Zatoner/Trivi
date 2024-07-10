@@ -18,6 +18,7 @@ data class NotificationEntity(
     val timestamp: Long
 ) {
     fun toNotificationItem(): NotificationItem {
+        // maybe pass in null values here instead of using the default values
         return NotificationItem(
             id = id,
             title = title ?: "No Title",

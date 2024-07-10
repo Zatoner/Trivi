@@ -24,43 +24,14 @@ class NotificationListener : NotificationListenerService() {
 
     override fun onNotificationPosted(sbn: StatusBarNotification?) {
         sbn?.let {
-            val bundle: Bundle = sbn.notification.extras
-            val textCharSequence = bundle.getCharSequence("android.text")
-            val subTextCharSequence = bundle.getCharSequence("android.subText")
-            val titleCharSequence = bundle.getCharSequence("android.title")
-            val bigTextCharSequence = bundle.getCharSequence("android.bigText")
-
-            val text: String? = when (textCharSequence) {
-                is SpannableString -> textCharSequence.toString()
-                is String -> textCharSequence
-                else -> null
-            }
-
-            val subText: String? = when (subTextCharSequence) {
-                is SpannableString -> subTextCharSequence.toString()
-                is String -> subTextCharSequence
-                else -> null
-            }
-
-            val title: String? = when (titleCharSequence) {
-                is SpannableString -> titleCharSequence.toString()
-                is String -> titleCharSequence
-                else -> null
-            }
-
-            val bigText: String? = when (bigTextCharSequence) {
-                is SpannableString -> bigTextCharSequence.toString()
-                is String -> bigTextCharSequence
-                else -> null
-            }
-
+            val bundle = sbn.notification.extras
 
             val notification = NotificationEntity(
                 id = sbn.id,
-                title = title,
-                subText = subText,
-                text = text,
-                bigText = bigText,
+                title = bundle.getStringOrNull("android.title"),
+                subText = bundle.getStringOrNull("android.subText"),
+                text = bundle.getStringOrNull("android.text"),
+                bigText = bundle.getStringOrNull("android.bigText"),
                 packageName = sbn.packageName,
                 timestamp = sbn.postTime
             )
@@ -71,9 +42,22 @@ class NotificationListener : NotificationListenerService() {
         }
     }
 
+    override fun onNotificationRemoved(sbn: StatusBarNotification?) {
+        // TODO: Handle notification removal
+        // add a dismissed field to the notification entity
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         serviceScope.cancel()
+    }
+
+    private fun Bundle.getStringOrNull(key: String): String? {
+        return when (val charSequence = getCharSequence(key)) {
+            is SpannableString -> charSequence.toString()
+            is String -> charSequence
+            else -> null
+        }
     }
 
 }
