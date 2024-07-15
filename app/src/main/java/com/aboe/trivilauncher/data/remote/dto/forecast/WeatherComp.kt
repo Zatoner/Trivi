@@ -1,20 +1,18 @@
-package com.aboe.trivilauncher.data.remote.dto.weather
+package com.aboe.trivilauncher.data.remote.dto.forecast
+
 
 import com.aboe.trivilauncher.domain.model.WeatherItem
+import com.google.gson.annotations.SerializedName
 
-
-data class WeatherDto(
-    val base: String,
+data class WeatherComp (
     val clouds: Clouds,
-    val cod: Int,
-    val coord: Coord,
     val dt: Int,
-    val id: Int,
+    @SerializedName("dt_txt")
+    val dtTxt: String,
     val main: Main,
-    val name: String,
-    val rain: Rain,
+    val pop: Double,
+    val rain: Rain?,
     val sys: Sys,
-    val timezone: Int,
     val visibility: Int,
     val weather: List<Weather>,
     val wind: Wind

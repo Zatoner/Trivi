@@ -13,6 +13,12 @@ class GetNotificationsUseCase @Inject constructor(
 
     suspend operator fun invoke(): List<NotificationItem> {
         try {
+            notificationRepository.deleteNotifications()
+        } catch (e: Exception) {
+            Log.e(TAG, "Error deleting notifications: ${e.message}")
+        }
+
+        try {
             return notificationRepository.getAllNotifications()
         } catch (e: Exception) {
             Log.e(TAG, "Error getting notifications: ${e.message}")

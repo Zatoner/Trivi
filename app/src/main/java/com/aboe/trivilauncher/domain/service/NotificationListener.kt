@@ -37,6 +37,8 @@ class NotificationListener : NotificationListenerService() {
             )
 
             serviceScope.launch {
+//                if (serviceScope.isActive)
+                // dont add notfications from system apps
                 addNotificationUseCase(notification)
             }
         }

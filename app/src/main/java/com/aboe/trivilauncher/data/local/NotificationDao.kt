@@ -15,7 +15,6 @@ interface NotificationDao {
     @Query("SELECT * FROM notifications ORDER BY timestamp DESC")
     suspend fun getAllNotifications(): List<NotificationEntity>
 
-    // delete notifications which are older than timestamp
     @Query("DELETE FROM notifications WHERE timestamp < :timestamp")
     suspend fun deleteNotifications(timestamp: Long)
 
