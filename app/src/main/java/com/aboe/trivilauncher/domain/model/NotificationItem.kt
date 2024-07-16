@@ -10,11 +10,14 @@ data class NotificationItem(
     val timestamp: String
 ) {
     override fun toString(): String {
-        return "app: $packageName \n" +
-                "timestamp: $timestamp \n" +
-                "title: $title \n" +
-                "subText: $subText \n" +
-                "text: $text \n" +
-                "bigText: $bigText \n"
+        return """
+            Notification at $timestamp:
+                id: $id
+                app: $packageName
+                title: $title
+                subText: $subText
+                text: $text
+                bigText: $bigText
+        """.trimIndent()
     }
 }

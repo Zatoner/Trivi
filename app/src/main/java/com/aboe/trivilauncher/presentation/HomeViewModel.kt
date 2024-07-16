@@ -17,19 +17,8 @@ class HomeViewModel @Inject constructor(
     init {
         println("HomeViewModel init")
         viewModelScope.launch {
-            println(getWeatherForecastUseCase(0.0, 0.0))
-        }
-    }
-
-    fun getNotifications() {
-        println("Getting notifications...")
-        viewModelScope.launch {
-            val notifications = getNotificationsUseCase()
-
-            for (n in notifications) {
-                println("---Notif---")
-                println(n)
-            }
+            println(getWeatherForecastUseCase(-3.082330, 47.294120))
+            println(getNotificationsUseCase())
         }
     }
 

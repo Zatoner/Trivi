@@ -20,6 +20,7 @@ data class WeatherDto(
     val wind: Wind
 ) {
     fun toWeatherItem() : WeatherItem {
+        // maybe add sunset and sunrise for extra context
         return WeatherItem(
             main = weather[0].main,
             time = dt.toLong(),

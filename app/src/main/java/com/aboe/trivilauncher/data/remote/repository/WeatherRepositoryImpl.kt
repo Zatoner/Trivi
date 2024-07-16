@@ -10,11 +10,11 @@ class WeatherRepositoryImpl @Inject constructor(
 ) : WeatherRepository {
 
     override suspend fun getWeather(lon: Double, lat: Double): WeatherItem {
-        return weatherApi.getWeather(lon, lat).toWeatherItem()
+        return weatherApi.getWeather(lon = lon, lat = lat).toWeatherItem()
     }
 
     override suspend fun getForecast(lon: Double, lat: Double): List<WeatherItem> {
-        return weatherApi.getForecast(lon, lat).toWeatherItems()
+        return weatherApi.getForecast(lon = lon, lat = lat).toWeatherItems()
     }
 
 }
