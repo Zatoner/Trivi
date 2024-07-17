@@ -15,13 +15,13 @@ class AddNotificationUseCase @Inject constructor(
         try {
             notificationRepository.insertNotification(notification)
         } catch (e: Exception) {
-            Log.e(TAG, "Error adding notification: ${e.message}")
+            Log.e(TAG, "Error adding notification: ${e.message}", e)
         }
 
         try {
             notificationRepository.deleteNotifications()
         } catch (e: Exception) {
-            Log.e(TAG, "Error deleting notifications: ${e.message}")
+            Log.e(TAG, "Error deleting notifications: ${e.message}", e)
         }
     }
 }

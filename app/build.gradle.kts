@@ -90,4 +90,7 @@ dependencies {
     implementation(libs.androidx.room.runtime)
     ksp(libs.androidx.room.compiler)
     implementation(libs.androidx.room.ktx)
+
+    // Location Service
+    implementation(libs.play.services.location)
 }

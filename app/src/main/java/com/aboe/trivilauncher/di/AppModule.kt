@@ -8,12 +8,12 @@ import com.aboe.trivilauncher.data.remote.OpenWeatherApi
 import com.aboe.trivilauncher.data.remote.repository.WeatherRepositoryImpl
 import com.aboe.trivilauncher.domain.repository.NotificationRepository
 import com.aboe.trivilauncher.domain.repository.WeatherRepository
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
@@ -43,18 +43,18 @@ object AppModule {
     @Singleton
     fun provideOpenWeatherApi(): OpenWeatherApi {
 
-        val loggingInterceptor = HttpLoggingInterceptor().apply {
-            level = HttpLoggingInterceptor.Level.BODY // Log request and response body
-        }
-
-        val okHttpClient = OkHttpClient.Builder()
-            .addInterceptor(loggingInterceptor)
-            .build()
+//        val loggingInterceptor = HttpLoggingInterceptor().apply {
+//            level = HttpLoggingInterceptor.Level.BODY
+//        }
+//
+//        val okHttpClient = OkHttpClient.Builder()
+//            .addInterceptor(loggingInterceptor)
+//            .build()
 
         return Retrofit.Builder()
             .baseUrl(OpenWeatherApi.BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
-            .client(okHttpClient)
+//            .client(okHttpClient)
             .build()
             .create(OpenWeatherApi::class.java)
     }
@@ -65,5 +65,11 @@ object AppModule {
         return WeatherRepositoryImpl(api)
     }
 
+    @Provides
+    @Singleton
+    fun provideFusedLocationClient(app: Application): FusedLocationProviderClient {
+        return LocationServices
+            .getFusedLocationProviderClient(app)
+    }
 
 }

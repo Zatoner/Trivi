@@ -10,6 +10,7 @@ class GetNotificationsUseCase @Inject constructor(
 
     private val TAG = "GetNotificationsUseCase"
 
+    // think of using gemini to summarize notifications
     suspend operator fun invoke(): String {
         try {
             notificationRepository.deleteNotifications()
@@ -32,7 +33,7 @@ class GetNotificationsUseCase @Inject constructor(
 
             result
         } catch (e: Exception) {
-            Log.e(TAG, "Error getting notifications: ${e.message}")
+            Log.e(TAG, "Error getting notifications: ${e.message}", e)
             "Could not get notifications"
         }
     }

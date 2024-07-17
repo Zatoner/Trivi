@@ -20,6 +20,7 @@ googleAndroidLibrariesMapsplatformSecretsGradlePlugin = "2.0.1"
 # retrofit
 loggingInterceptor = "5.0.0-alpha.2"
 okhttp = "5.0.0-alpha.2"
+playServicesLocation = "21.3.0"
 retrofit = "2.11.0"
 converterGson = "2.9.0"
 
@@ -53,6 +54,7 @@ generativeai = { group = "com.google.ai.client.generativeai", name = "generative
 # retrofit
 logging-interceptor = { module = "com.squareup.okhttp3:logging-interceptor", version.ref = "loggingInterceptor" }
 okhttp = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp" }
+play-services-location = { module = "com.google.android.gms:play-services-location", version.ref = "playServicesLocation" }
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 
 # room
