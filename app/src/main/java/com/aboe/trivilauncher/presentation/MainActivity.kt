@@ -7,6 +7,7 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
@@ -36,7 +37,14 @@ class MainActivity : ComponentActivity() {
                 val viewModel: HomeViewModel = hiltViewModel()
 
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    RequestNotificationPermissionScreen(Modifier.padding(innerPadding))
+                    Column (
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(innerPadding)
+                    ) {
+                        RequestNotificationPermissionScreen()
+                        RequestUsageStatsPermissionScreen()
+                    }
 
                 }
             }
@@ -61,5 +69,20 @@ fun RequestNotificationPermissionScreen(
             ).show()
         }) {
         Text(text = "Grant Notification Access")
+    }
+}
+
+@Composable
+fun RequestUsageStatsPermissionScreen(
+    modifier: Modifier = Modifier
+) {
+    val context = LocalContext.current
+
+    Button(modifier = modifier,
+        onClick = {
+            val intent = Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS)
+            context.startActivity(intent)
+        }) {
+        Text(text = "Grant App Usage Access")
     }
 }

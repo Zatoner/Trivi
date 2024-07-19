@@ -23,10 +23,9 @@ class HomeViewModel @Inject constructor(
     init {
         println("HomeViewModel init")
         viewModelScope.launch {
-            val prompt = getGeminiPrompt("Give me a quick status update, let me know if I need to do anything according ot my context (like notifications) and any apps that I should open right now. go into great detail")
+            val prompt = getGeminiPrompt()
             // print number of tokens
             println(prompt)
-            println("Number of tokens: ${getNumberOfWords(prompt)}")
 
             val response = generativeModel.generateContent(
                 content {
@@ -35,11 +34,8 @@ class HomeViewModel @Inject constructor(
             )
 
             println(response.text)
+            println(response.usageMetadata?.totalTokenCount)
         }
-    }
-
-    fun getNumberOfWords(text: String): Int {
-        return text.trim().split("\\s+".toRegex()).size
     }
 
 }

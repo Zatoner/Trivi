@@ -2,6 +2,7 @@ package com.aboe.trivilauncher.data.local.repository
 
 import android.app.Application
 import android.content.pm.PackageManager
+import com.aboe.trivilauncher.common.Constants
 import com.aboe.trivilauncher.data.local.NotificationDao
 import com.aboe.trivilauncher.data.local.entity.NotificationEntity
 import com.aboe.trivilauncher.domain.model.NotificationItem
@@ -30,7 +31,7 @@ class NotificationRepositoryImpl @Inject constructor(
 
     override suspend fun deleteNotifications() {
         val currentTimeMillis = System.currentTimeMillis()
-        val twentyFourHoursInMillis = 24 * 60 * 60 * 1000
+        val twentyFourHoursInMillis = Constants.MAX_NOTIFICATION_AGE_HOURS * 60 * 60 * 1000
 
         val cutoffTimestamp = currentTimeMillis - twentyFourHoursInMillis
         notificationDao.deleteNotifications(cutoffTimestamp)
