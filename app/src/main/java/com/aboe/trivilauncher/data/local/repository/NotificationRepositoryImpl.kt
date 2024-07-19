@@ -37,6 +37,7 @@ class NotificationRepositoryImpl @Inject constructor(
         notificationDao.deleteNotifications(cutoffTimestamp)
     }
 
+    // move this to data class?
     private fun getAppNameFromPackageName(packageName: String): String? {
         return try {
             val applicationInfo = packageManager.getApplicationInfo(packageName, 0)

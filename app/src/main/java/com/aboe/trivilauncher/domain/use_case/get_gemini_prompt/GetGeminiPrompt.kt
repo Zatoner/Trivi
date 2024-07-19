@@ -27,7 +27,7 @@ class GetGeminiPrompt @Inject constructor(
     suspend operator fun invoke(prompt: String = "default") : String {
         val actualPrompt = if (prompt == "default") Constants.DEFAULT_PROMPT else prompt
 
-        val userName = "Not implemented"
+        val userName = "Adrien"
         val userInfo = "Not implemented"
 
         val currentTime = SimpleDateFormat("HH:mm:ss, dd/MM/yyyy", Locale.getDefault()).format(Date())
@@ -45,8 +45,9 @@ class GetGeminiPrompt @Inject constructor(
         } ?: "Location not available"
 
         val finalPrompt = buildString {
-            appendLine("SYSTEM PROMPT: ${Constants.SYSTEM_PROMPT}")
             appendLine("--------------------------------------------------")
+            appendLine("SYSTEM PROMPT: ${Constants.SYSTEM_PROMPT}")
+            appendLine("")
             appendLine("PROMPT: $actualPrompt")
             appendLine("--------------------------------------------------")
             appendLine("USER CONTEXT:")
@@ -54,14 +55,28 @@ class GetGeminiPrompt @Inject constructor(
             appendLine("User info: $userInfo")
             appendLine("Current time: $currentTime")
             appendLine("User location: $userLocationString")
+            appendLine("")
+
             appendLine("Weather forecast (next ${Constants.MAX_WEATHER_FORECAST_ITEMS * 3} hours):")
             appendLine(weatherForecast)
-            appendLine("-----")
+            // appendLine("")
+
             appendLine("Notifications (past ${Constants.MAX_NOTIFICATION_AGE_HOURS} hours):")
             appendLine(notifications)
-            appendLine("-----")
+            //appendLine("")
+
             appendLine("Apps used more than ${Constants.MIN_APP_USAGE_TIME_MINUTES} minutes in the last ${Constants.MAX_APP_USAGE_AGE_DAYS} days:")
             appendLine(installedApps)
+            appendLine("")
+
+            appendLine("Recent interactions:")
+            appendLine("Not implemented")
+            appendLine("")
+
+            appendLine("Upcoming events:")
+            appendLine("Not implemented")
+            appendLine("")
+            appendLine("--------------------------------------------------")
         }
 
         return finalPrompt
@@ -97,7 +112,7 @@ class GetGeminiPrompt @Inject constructor(
         return appUsageMap.entries
             .filter { it.value > Constants.MIN_APP_USAGE_TIME_MINUTES * 60 * 1000 }
             .sortedByDescending { it.value }
-            .joinToString("\n") { "${it.key}, ${it.value / (1000 * 60)} mins" }
+            .joinToString("\n") { "- ${it.key}, ${it.value / (1000 * 60)} mins" }
     }
 
     // move to UseCase?

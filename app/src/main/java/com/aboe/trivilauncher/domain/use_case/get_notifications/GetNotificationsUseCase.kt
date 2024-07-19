@@ -27,7 +27,7 @@ class GetNotificationsUseCase @Inject constructor(
 
             val result = buildString {
                 notifications.forEach { notification ->
-                    appendLine(notification.toString())
+                    appendLine(notification)
                 }
             }
 

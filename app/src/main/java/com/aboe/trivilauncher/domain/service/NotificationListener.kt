@@ -27,7 +27,8 @@ class NotificationListener : NotificationListenerService() {
             val bundle = sbn.notification.extras
 
             val notification = NotificationEntity(
-                id = sbn.id,
+                // TODO: Temporary test of new id field
+                id = sbn.id + sbn.packageName.hashCode(),
                 title = bundle.getStringOrNull("android.title"),
                 subText = bundle.getStringOrNull("android.subText"),
                 text = bundle.getStringOrNull("android.text"),
@@ -37,9 +38,10 @@ class NotificationListener : NotificationListenerService() {
             )
 
             serviceScope.launch {
-//                if (serviceScope.isActive)
-                // dont add notfications from system apps
-                addNotificationUseCase(notification)
+                // implement a custom filter here
+                if (notification.title != null && notification.text != null) {
+                    addNotificationUseCase(notification)
+                }
             }
         }
     }

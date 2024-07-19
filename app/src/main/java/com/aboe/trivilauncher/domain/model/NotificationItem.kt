@@ -1,23 +1,29 @@
 package com.aboe.trivilauncher.domain.model
 
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
+
 data class NotificationItem(
     val id: Int,
-    val title: String,
-    val subText: String,
-    val text: String,
-    val bigText: String,
+    val title: String?,
+    val subText: String?,
+    val text: String?,
+    val bigText: String?,
     val packageName: String,
-    val timestamp: String
+    val timestamp: Long
 ) {
     override fun toString(): String {
-        return """
-            Notification at $timestamp:
-                id: $id
-                app: $packageName
-                title: $title
-                subText: $subText
-                text: $text
-                bigText: $bigText
-        """.trimIndent()
+
+        val time = SimpleDateFormat(
+            "HH:mm",
+            Locale.getDefault()
+        ).format(Date(timestamp))
+
+        val titleString = title ?: "No Title"
+        val subTextString = if (subText != null) "[${subText}]" else ""
+        val textString = text ?: ""
+
+        return "- $time: $titleString $subTextString($packageName) - $textString "
     }
 }

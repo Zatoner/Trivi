@@ -3,9 +3,6 @@ package com.aboe.trivilauncher.data.local.entity
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.aboe.trivilauncher.domain.model.NotificationItem
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
 
 @Entity(tableName = "notifications")
 data class NotificationEntity(
@@ -18,19 +15,14 @@ data class NotificationEntity(
     val timestamp: Long
 ) {
     fun toNotificationItem(): NotificationItem {
-        // maybe pass in null values here instead of using the default values
         return NotificationItem(
             id = id,
-            title = title ?: "No Title",
-            subText = subText ?: "No SubText",
-            text = text ?: "No Text",
-            bigText = bigText ?: "No BigText",
+            title = title,
+            subText = subText,
+            text = text,
+            bigText = bigText,
             packageName = packageName,
-
-            timestamp = SimpleDateFormat(
-                "yyyy-MM-dd HH:mm:ss",
-                Locale.getDefault()
-            ).format(Date(timestamp))
+            timestamp = timestamp,
         )
     }
 }

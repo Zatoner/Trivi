@@ -8,11 +8,11 @@ object Constants {
 
     const val MAX_NOTIFICATION_AGE_HOURS = 12
 
-    const val MAX_WEATHER_FORECAST_ITEMS = 6
+    const val MAX_WEATHER_FORECAST_ITEMS = 8
 
     const val MAX_APP_USAGE_AGE_DAYS = 7
 
-    const val MIN_APP_USAGE_TIME_MINUTES = 5
+    const val MIN_APP_USAGE_TIME_MINUTES = 1
 
     // Max number of tokens to generate
     const val MAX_TOKENS = 2048
