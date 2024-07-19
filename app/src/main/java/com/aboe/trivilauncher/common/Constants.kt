@@ -1,5 +1,10 @@
 package com.aboe.trivilauncher.common
 
+import com.google.ai.client.generativeai.type.BlockThreshold
+import com.google.ai.client.generativeai.type.HarmCategory
+import com.google.ai.client.generativeai.type.SafetySetting
+import com.google.ai.client.generativeai.type.generationConfig
+
 object Constants {
 
     const val SYSTEM_PROMPT = "you're my personal assistant super useful to the point, no need to tell info that the user already knows."
@@ -14,14 +19,15 @@ object Constants {
 
     const val MIN_APP_USAGE_TIME_MINUTES = 1
 
-    // Max number of tokens to generate
-    const val MAX_TOKENS = 2048
+    val GEMINI_CONFIG = generationConfig {
+        temperature = 0.4f
+        maxOutputTokens = 128
+    }
 
-    // Temperature for sampling
-    const val TEMPERATURE = 0.9
-
-    // Top-p sampling
-    const val TOP_P = 1.0
-
+    private val HARASSMENT_PARAM = SafetySetting(HarmCategory.HARASSMENT, BlockThreshold.LOW_AND_ABOVE)
+    private val HATE_SPEECH_PARAM = SafetySetting(HarmCategory.HATE_SPEECH, BlockThreshold.LOW_AND_ABOVE)
+    private val DANGEROUS_CONTENT_PARAM = SafetySetting(HarmCategory.DANGEROUS_CONTENT, BlockThreshold.LOW_AND_ABOVE)
+    private val SEXUALLY_EXPLICIT_PARAM = SafetySetting(HarmCategory.SEXUALLY_EXPLICIT, BlockThreshold.LOW_AND_ABOVE)
+    val SAFETY_SETTINGS = listOf(HARASSMENT_PARAM, HATE_SPEECH_PARAM, DANGEROUS_CONTENT_PARAM, SEXUALLY_EXPLICIT_PARAM)
 
 }

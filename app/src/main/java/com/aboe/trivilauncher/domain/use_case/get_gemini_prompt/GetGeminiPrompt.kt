@@ -21,7 +21,6 @@ class GetGeminiPrompt @Inject constructor(
     private val getWeatherForecastUseCase: GetWeatherForecastUseCase,
     private val app: Application
 ){
-
     val TAG = "getGeminiPrompt"
 
     suspend operator fun invoke(prompt: String = "default") : String {
@@ -31,7 +30,6 @@ class GetGeminiPrompt @Inject constructor(
         val userInfo = "Not implemented"
 
         val currentTime = SimpleDateFormat("HH:mm:ss, dd/MM/yyyy", Locale.getDefault()).format(Date())
-        // maybe not needed
         val installedApps = getAllAppPackagesAndNames(app)
         val notifications = getNotificationsUseCase()
         val userLocation = getUserLocationUseCase()

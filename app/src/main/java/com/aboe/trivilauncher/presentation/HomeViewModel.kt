@@ -3,6 +3,7 @@ package com.aboe.trivilauncher.presentation
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.aboe.trivilauncher.BuildConfig
+import com.aboe.trivilauncher.common.Constants
 import com.aboe.trivilauncher.domain.use_case.get_gemini_prompt.GetGeminiPrompt
 import com.google.ai.client.generativeai.GenerativeModel
 import com.google.ai.client.generativeai.type.content
@@ -17,7 +18,9 @@ class HomeViewModel @Inject constructor(
 
     private val generativeModel = GenerativeModel(
         modelName = BuildConfig.modelName,
-        apiKey = BuildConfig.geminiKey
+        apiKey = BuildConfig.geminiKey,
+        generationConfig = Constants.GEMINI_CONFIG,
+        safetySettings = Constants.SAFETY_SETTINGS
     )
 
     init {
