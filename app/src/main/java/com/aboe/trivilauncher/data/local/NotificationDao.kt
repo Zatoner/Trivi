@@ -27,8 +27,10 @@ interface NotificationDao {
             val mergedNotification = existingNotification.copy(
                 title = notification.title,
                 subText = notification.subText,
-                text = listOfNotNull(existingNotification.text, notification.text)
-                    .joinToString(" • "),
+                text = listOfNotNull(existingNotification.text,
+                    if (existingNotification.text != notification.text)
+                        notification.text else null
+                ).joinToString(" • "),
                 bigText = notification.bigText,
                 packageName = notification.packageName,
                 timestamp = notification.timestamp

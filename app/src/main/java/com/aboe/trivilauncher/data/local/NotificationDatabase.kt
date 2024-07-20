@@ -6,7 +6,7 @@ import com.aboe.trivilauncher.data.local.entity.NotificationEntity
 
 @Database(
     entities = [NotificationEntity::class],
-    version = 4,
+    version = 5,
     exportSchema = false
 )
 
