@@ -26,7 +26,7 @@ class NotificationRepositoryImpl @Inject constructor(
     }
 
     override suspend fun insertNotification(notification: NotificationEntity) {
-        notificationDao.insertNotification(notification)
+        notificationDao.upsertNotification(notification)
     }
 
     override suspend fun deleteNotifications() {

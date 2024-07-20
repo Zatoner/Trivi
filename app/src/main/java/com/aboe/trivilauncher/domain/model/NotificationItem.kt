@@ -5,7 +5,7 @@ import java.util.Date
 import java.util.Locale
 
 data class NotificationItem(
-    val id: Int,
+    val id: Long,
     val title: String?,
     val subText: String?,
     val text: String?,

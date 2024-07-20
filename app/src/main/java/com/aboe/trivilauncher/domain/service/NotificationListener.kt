@@ -25,10 +25,13 @@ class NotificationListener : NotificationListenerService() {
     override fun onNotificationPosted(sbn: StatusBarNotification?) {
         sbn?.let {
             val bundle = sbn.notification.extras
+            val notificationTitle = bundle.getStringOrNull("android.title") ?: ""
+
+            val id = sbn.id.toLong() + sbn.packageName.hashCode() +
+                    notificationTitle.hashCode()
 
             val notification = NotificationEntity(
-                // TODO: Temporary test of new id field
-                id = sbn.id + sbn.packageName.hashCode(),
+                id = id,
                 title = bundle.getStringOrNull("android.title"),
                 subText = bundle.getStringOrNull("android.subText"),
                 text = bundle.getStringOrNull("android.text"),
@@ -39,7 +42,7 @@ class NotificationListener : NotificationListenerService() {
 
             serviceScope.launch {
                 // implement a custom filter here
-                if (notification.title != null && notification.text != null) {
+                if (!notification.title.isNullOrBlank() && !notification.text.isNullOrBlank()) {
                     addNotificationUseCase(notification)
                 }
             }

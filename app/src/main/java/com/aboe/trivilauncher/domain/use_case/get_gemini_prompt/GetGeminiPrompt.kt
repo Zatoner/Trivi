@@ -67,13 +67,13 @@ class GetGeminiPrompt @Inject constructor(
             appendLine(installedApps)
             appendLine("")
 
-            appendLine("Recent interactions:")
-            appendLine("Not implemented")
-            appendLine("")
-
-            appendLine("Upcoming events:")
-            appendLine("Not implemented")
-            appendLine("")
+//            appendLine("Recent interactions:")
+//            appendLine("Not implemented")
+//            appendLine("")
+//
+//            appendLine("Upcoming events:")
+//            appendLine("Not implemented")
+//            appendLine("")
             appendLine("--------------------------------------------------")
         }
 

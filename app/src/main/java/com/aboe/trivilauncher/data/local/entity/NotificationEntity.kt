@@ -6,7 +6,7 @@ import com.aboe.trivilauncher.domain.model.NotificationItem
 
 @Entity(tableName = "notifications")
 data class NotificationEntity(
-    @PrimaryKey val id: Int,
+    @PrimaryKey val id: Long,
     val title: String?,
     val subText: String?,
     val text: String?,
