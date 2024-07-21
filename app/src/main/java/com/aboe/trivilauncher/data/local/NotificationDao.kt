@@ -24,13 +24,19 @@ interface NotificationDao {
         if (existingNotification == null) {
             insertNotification(notification)
         } else {
+            // improve this
+            // string difference and merge
+            val mergedText = listOfNotNull(existingNotification.text,
+                if ((existingNotification.text?.split(" • ")?.lastOrNull() ?: "") != notification.text)
+                    notification.text
+                else
+                    null
+            ).joinToString(" • ")
+
             val mergedNotification = existingNotification.copy(
                 title = notification.title,
                 subText = notification.subText,
-                text = listOfNotNull(existingNotification.text,
-                    if (existingNotification.text != notification.text)
-                        notification.text else null
-                ).joinToString(" • "),
+                text = mergedText,
                 bigText = notification.bigText,
                 packageName = notification.packageName,
                 timestamp = notification.timestamp
