@@ -1,28 +1,29 @@
 package com.aboe.trivilauncher.domain.use_case.get_user_location
 
-import android.app.Application
+import android.content.Context
 import android.content.pm.PackageManager
 import android.location.Location
 import android.util.Log
 import androidx.core.content.ContextCompat
 import com.google.android.gms.location.FusedLocationProviderClient
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.suspendCancellableCoroutine
 import javax.inject.Inject
 import kotlin.coroutines.resume
 
 class GetUserLocationUseCase @Inject constructor(
     private val fusedLocationProviderClient: FusedLocationProviderClient,
-    private val application: Application
+    @ApplicationContext private val context: Context
 ) {
     val TAG = "getUserLocationUseCase"
 
     suspend operator fun invoke(): Location? {
         // do better permission handling in the future
         val fineLocationPerm = (ContextCompat
-            .checkSelfPermission(application, android.Manifest.permission.ACCESS_FINE_LOCATION))
+            .checkSelfPermission(context, android.Manifest.permission.ACCESS_FINE_LOCATION))
 
         val coarseLocationPerm = (ContextCompat
-            .checkSelfPermission(application, android.Manifest.permission.ACCESS_COARSE_LOCATION))
+            .checkSelfPermission(context, android.Manifest.permission.ACCESS_COARSE_LOCATION))
 
         if (fineLocationPerm != PackageManager.PERMISSION_GRANTED ||
             coarseLocationPerm != PackageManager.PERMISSION_GRANTED) {

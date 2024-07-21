@@ -1,6 +1,7 @@
 package com.aboe.trivilauncher.data.remote.dto.weather
 
 import com.aboe.trivilauncher.domain.model.WeatherItem
+import com.aboe.trivilauncher.domain.model.WeatherWidgetItem
 
 
 data class WeatherDto(
@@ -31,6 +32,13 @@ data class WeatherDto(
             windSpeed = wind.speed,
             clouds = clouds.all,
             visibility = visibility
+        )
+    }
+
+    fun toWeatherWidgetItem() : WeatherWidgetItem {
+        return WeatherWidgetItem(
+            temperature = "${main.temp.toInt()}°C",
+            icon = weather[0].icon
         )
     }
 }

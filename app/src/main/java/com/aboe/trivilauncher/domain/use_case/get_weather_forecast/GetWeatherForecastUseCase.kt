@@ -10,10 +10,8 @@ import javax.inject.Inject
 class GetWeatherForecastUseCase @Inject constructor(
     private val weatherRepository: WeatherRepository
 ) {
-
     val TAG = "GetWeatherForecastUseCase"
 
-    // think of using gemini to summarize weather data
     suspend operator fun invoke(lon: Double, lat: Double): String {
         return try {
             val weather = weatherRepository.getWeather(lon, lat)
@@ -46,5 +44,4 @@ class GetWeatherForecastUseCase @Inject constructor(
             "No Weather Info"
         }
     }
-
 }

@@ -1,6 +1,5 @@
 package com.aboe.trivilauncher.domain.use_case.get_gemini_prompt
 
-import android.app.Application
 import android.app.usage.UsageStatsManager
 import android.content.Context
 import android.content.pm.PackageManager
@@ -10,6 +9,7 @@ import com.aboe.trivilauncher.common.Constants
 import com.aboe.trivilauncher.domain.use_case.get_notifications.GetNotificationsUseCase
 import com.aboe.trivilauncher.domain.use_case.get_user_location.GetUserLocationUseCase
 import com.aboe.trivilauncher.domain.use_case.get_weather_forecast.GetWeatherForecastUseCase
+import dagger.hilt.android.qualifiers.ApplicationContext
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -19,7 +19,7 @@ class GetGeminiPrompt @Inject constructor(
     private val getNotificationsUseCase: GetNotificationsUseCase,
     private val getUserLocationUseCase: GetUserLocationUseCase,
     private val getWeatherForecastUseCase: GetWeatherForecastUseCase,
-    private val app: Application
+    @ApplicationContext private val context: Context
 ){
     val TAG = "getGeminiPrompt"
 
@@ -30,7 +30,7 @@ class GetGeminiPrompt @Inject constructor(
         val userInfo = "Not implemented"
 
         val currentTime = SimpleDateFormat("HH:mm:ss, dd/MM/yyyy", Locale.getDefault()).format(Date())
-        val installedApps = getAllAppPackagesAndNames(app)
+        val installedApps = getAllAppPackagesAndNames(context)
         val notifications = getNotificationsUseCase()
         val userLocation = getUserLocationUseCase()
 
@@ -39,9 +39,10 @@ class GetGeminiPrompt @Inject constructor(
         } ?: "No weather forecast available"
 
         val userLocationString = userLocation?.let {
-            getUserAddress(app, it.latitude, it.longitude)
+            getUserAddress(context, it.latitude, it.longitude)
         } ?: "Location not available"
 
+        // use StringBuilder for better performance
         val finalPrompt = buildString {
             appendLine("--------------------------------------------------")
             appendLine("SYSTEM PROMPT: ${Constants.SYSTEM_PROMPT}")
@@ -72,6 +73,10 @@ class GetGeminiPrompt @Inject constructor(
 //            appendLine("")
 //
 //            appendLine("Upcoming events:")
+//            appendLine("Not implemented")
+//            appendLine("")
+//
+//            appendLine("Knowledge base about user")
 //            appendLine("Not implemented")
 //            appendLine("")
             appendLine("--------------------------------------------------")

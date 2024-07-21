@@ -25,7 +25,7 @@ class NotificationListener : NotificationListenerService() {
     override fun onNotificationPosted(sbn: StatusBarNotification?) {
         sbn?.let {
             val bundle = sbn.notification.extras
-            val notificationTitle = bundle.getStringOrNull("android.title") ?: ""
+            val notificationTitle = bundle.getStringOrNull("android.title").orEmpty()
 
             val id = sbn.id.toLong() + sbn.packageName.hashCode() +
                     notificationTitle.hashCode()

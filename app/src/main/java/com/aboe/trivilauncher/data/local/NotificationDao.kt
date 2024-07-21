@@ -26,12 +26,21 @@ interface NotificationDao {
         } else {
             // improve this
             // string difference and merge
+            // no need to update if text is null or same
             val mergedText = listOfNotNull(existingNotification.text,
                 if ((existingNotification.text?.split(" • ")?.lastOrNull() ?: "") != notification.text)
                     notification.text
                 else
                     null
             ).joinToString(" • ")
+
+            //            val newText = notification.text ?: ""
+//            val existingText = existingNotification.text ?: ""
+//            val mergedText = if (existingText.endsWith(newText)) {
+//                existingNotification.text // No need to append if already ends with newText
+//            } else {
+//                existingNotification.text + " • " + newText
+//            }
 
             val mergedNotification = existingNotification.copy(
                 title = notification.title,
