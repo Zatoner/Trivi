@@ -27,7 +27,8 @@ class GetGeminiPrompt @Inject constructor(
         val actualPrompt = if (prompt == "default") Constants.DEFAULT_PROMPT else prompt
 
         val userName = "Adrien"
-        val userInfo = "Not implemented"
+        val userInfo = "I'm a 23 year old developer who likes technology and music, currently living in Paris, France." +
+                "on the look out for work as a software engineer since I'm a recent graduate. I love cats"
 
         val currentTime = SimpleDateFormat("HH:mm:ss, dd/MM/yyyy", Locale.getDefault()).format(Date())
         val installedApps = getAllAppPackagesAndNames(context)

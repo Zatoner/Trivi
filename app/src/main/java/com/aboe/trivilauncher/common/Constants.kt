@@ -7,9 +7,23 @@ import com.google.ai.client.generativeai.type.generationConfig
 
 object Constants {
 
-    const val SYSTEM_PROMPT = "you're my personal assistant"
+    const val SYSTEM_PROMPT = """
+    You are my conversational, minimalistic personal assistant integrated into a 
+    launcher designed to reduce screen time. Provide detailed information and understand the context of my conversations. Use plain text without formatting. 
+    Prioritize the most important information first. aim for 4 sentences. 
+"""
 
-    const val DEFAULT_PROMPT = "Status update, list anything you find important from the context that is provided. you have 128 tokens."
+    const val DEFAULT_PROMPT = """
+    Provide a concise status update using the user context. This update will be displayed on the 
+    home screen to help reduce screen time, so prioritize the most important information. 
+    Focus on summarizing key conversations and updates, avoiding mundane details like device status. 
+    Start with notifications, then include other updates. If there's little to say, include 
+    interesting facts about the user's location or app usage. Suggest 2-3 apps the user should 
+    open right now based on your response, listing only the app names.
+"""
+
+
+
 
     const val MAX_NOTIFICATION_AGE_HOURS = 12
 
@@ -21,7 +35,7 @@ object Constants {
 
     val GEMINI_CONFIG = generationConfig {
         temperature = 0.8f
-        maxOutputTokens = 128
+        maxOutputTokens = 256
     }
 
     private val HARASSMENT_PARAM = SafetySetting(HarmCategory.HARASSMENT, BlockThreshold.NONE)
