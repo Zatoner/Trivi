@@ -2,9 +2,12 @@ package com.aboe.trivilauncher.domain.use_case.get_weather_widget
 
 import android.util.Log
 import com.aboe.trivilauncher.R
+import com.aboe.trivilauncher.common.Resource
 import com.aboe.trivilauncher.domain.model.WeatherWidgetItem
 import com.aboe.trivilauncher.domain.repository.WeatherRepository
 import com.aboe.trivilauncher.domain.use_case.get_user_location.GetUserLocationUseCase
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
 class GetWeatherWidgetUseCase @Inject constructor(
@@ -13,33 +16,31 @@ class GetWeatherWidgetUseCase @Inject constructor(
 ) {
     val TAG = "GetWeatherWidgetUseCase"
 
-    // convert to flow of result
-    suspend operator fun invoke() : WeatherWidgetItem {
-        val location = getUserLocationUseCase() ?: return WeatherWidgetItem(
-            temperature = "NA°C",
-            icon = "0",
-            iconResource = "-1".toIconResource()
-        )
+    operator fun invoke() : Flow<Resource<WeatherWidgetItem>> = flow {
 
-        return try {
+        val location = getUserLocationUseCase() ?: run {
+            emit(Resource.Error("Location not found"))
+            return@flow
+        }
+
+        try {
+            emit(Resource.Loading())
             val weatherWidget = weatherRepository.getWeatherWidget(
                 lon = location.longitude,
                 lat = location.latitude
             )
 
-            weatherWidget.copy(
+            emit(Resource.Success(weatherWidget.copy(
                 iconResource = weatherWidget.icon.toIconResource()
-            )
+            )))
+
         } catch (e: Exception) {
             Log.e(TAG, "Error fetching weather data ${e.message}")
-            WeatherWidgetItem(
-                temperature = "NA°C",
-                icon = "0",
-                iconResource = "-1".toIconResource()
-            )
+            emit(Resource.Error("Error fetching weather data"))
         }
     }
 
+    // use enums for icon resources
     private fun String.toIconResource(): Int {
         return when (this) {
             "01d" -> R.drawable.outline_clear_day_48

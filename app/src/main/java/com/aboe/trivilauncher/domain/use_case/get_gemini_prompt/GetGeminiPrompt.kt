@@ -50,7 +50,8 @@ class GetGeminiPrompt @Inject constructor(
             appendLine("")
             appendLine("PROMPT: $actualPrompt")
             appendLine("--------------------------------------------------")
-            appendLine("USER CONTEXT:")
+            appendLine("PROMPT CONTEXT:")
+            // last request
             appendLine("User name: $userName")
             appendLine("User info: $userInfo")
             appendLine("Current time: $currentTime")
