@@ -38,6 +38,7 @@ class NotificationRepositoryImpl @Inject constructor(
     }
 
     // move this to data class?
+    // responsible for ApkAssets spam, try caching
     private fun getAppNameFromPackageName(packageName: String): String? {
         return try {
             val applicationInfo = packageManager.getApplicationInfo(packageName, 0)

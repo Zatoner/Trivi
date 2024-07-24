@@ -39,8 +39,8 @@ class GetGeminiPrompt @Inject constructor(
             getWeatherForecastUseCase(lat = it.latitude, lon = it.longitude)
         } ?: "No weather forecast available"
 
-        val userLocationString = userLocation?.let {
-            getUserAddress(context, it.latitude, it.longitude)
+        val userLocationString = userLocation?.let { location ->
+            getUserAddress(context, location.latitude, location.longitude)
         } ?: "Location not available"
 
         // use StringBuilder for better performance
@@ -88,6 +88,7 @@ class GetGeminiPrompt @Inject constructor(
     }
 
     // move to UseCase
+    // responsible for ApkAssets spam, try caching
     private fun getAllAppPackagesAndNames(context: Context): String {
         val usageStatsManager = context.getSystemService(Context.USAGE_STATS_SERVICE)
                 as UsageStatsManager
@@ -109,7 +110,7 @@ class GetGeminiPrompt @Inject constructor(
                     null // Skip apps not found
                 }
             }
-            .filterKeys { it != null  }
+            .filterKeys { it != null }
             .mapValues { (_, usageList) ->
                 usageList.sumOf { it.totalTimeInForeground }
             }

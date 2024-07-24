@@ -25,7 +25,7 @@ interface NotificationDao {
             insertNotification(notification)
         } else {
             // improve this
-            // string difference and merge
+            // maybe add a char limit to the text
             // no need to update if text is null or same
             val mergedText = listOfNotNull(existingNotification.text,
                 if ((existingNotification.text?.split(" • ")?.lastOrNull() ?: "") != notification.text)
@@ -34,7 +34,7 @@ interface NotificationDao {
                     null
             ).joinToString(" • ")
 
-            //            val newText = notification.text ?: ""
+//            val newText = notification.text ?: ""
 //            val existingText = existingNotification.text ?: ""
 //            val mergedText = if (existingText.endsWith(newText)) {
 //                existingNotification.text // No need to append if already ends with newText
