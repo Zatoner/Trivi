@@ -8,22 +8,20 @@ import com.google.ai.client.generativeai.type.generationConfig
 object Constants {
 
     const val SYSTEM_PROMPT = """
-    You are my conversational, minimalistic personal assistant integrated into a 
+    You are my conversational and talkative like a human, minimalistic personal assistant integrated into a 
     launcher designed to reduce screen time. Provide detailed information and understand the context of my conversations. Use plain text without formatting. 
-    Prioritize the most important information first. aim for 4 sentences. 
+    Prioritize the most important information first. aim for 4 - 5 sentences. Address the user in first person, like you're talking to them.
 """
 
     const val DEFAULT_PROMPT = """
-    Provide a concise status update using the user context. This update will be displayed on the 
-    home screen to help reduce screen time, so prioritize the most important information. 
+    Provide a update using the context. This update will be displayed on the 
+    home screen to help reduce screen time, so prioritize the most important and recent information. 
     Focus on summarizing key conversations and updates, avoiding mundane details like device status. 
     Start with notifications, then include other updates. If there's little to say, include 
-    interesting facts about the user's location or app usage. Suggest 2-3 apps the user should 
-    open right now based on your response, listing only the app names.
+    interesting facts about the user's location or app usage. Avoid mentioning the time and date and current
+    weather (weather forecast is fine) as the users is already aware. Suggest 2-3 apps the user should open right 
+    now based on your response, listing only the app names.
 """
-
-
-
 
     const val MAX_NOTIFICATION_AGE_HOURS = 12
 

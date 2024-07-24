@@ -22,7 +22,7 @@ data class NotificationItem(
 
         val titleString = title ?: "No Title"
         val subTextString = if (subText != null) "[${subText}]" else ""
-        val textString = text ?: ""
+        val textString = (text ?: "").replace("\n", " ")
 
         return "- $time: $titleString $subTextString($packageName) - $textString "
     }

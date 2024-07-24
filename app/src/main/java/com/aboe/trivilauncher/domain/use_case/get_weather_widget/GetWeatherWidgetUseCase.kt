@@ -41,6 +41,7 @@ class GetWeatherWidgetUseCase @Inject constructor(
     }
 
     // use enums for icon resources
+    // maybe move to data class
     private fun String.toIconResource(): Int {
         return when (this) {
             "01d" -> R.drawable.outline_clear_day_48
