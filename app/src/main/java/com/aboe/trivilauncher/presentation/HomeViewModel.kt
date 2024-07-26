@@ -10,9 +10,11 @@ import com.aboe.trivilauncher.domain.use_case.get_weather_widget.GetWeatherWidge
 import com.google.ai.client.generativeai.GenerativeModel
 import com.google.ai.client.generativeai.type.content
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
@@ -22,7 +24,7 @@ class HomeViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val generativeModel = GenerativeModel(
-        modelName = BuildConfig.modelName,
+        modelName = Constants.MODEL_NAME,
         apiKey = BuildConfig.geminiKey,
         generationConfig = Constants.GEMINI_CONFIG,
         safetySettings = Constants.SAFETY_SETTINGS
@@ -40,15 +42,17 @@ class HomeViewModel @Inject constructor(
         }.launchIn(viewModelScope)
 
         viewModelScope.launch {
-            val prompt = getGeminiPrompt()
-            println(prompt)
+            withContext(Dispatchers.IO) {
+                val prompt = getGeminiPrompt()
+                println(prompt)
 
-            val response = generativeModel.generateContent(
-                content {
-                    text(prompt)
-                }
-            )
-            println(response.text)
+                val response = generativeModel.generateContent(
+                    content {
+                        text(prompt)
+                    }
+                )
+                println(response.text)
+            }
         }
     }
 

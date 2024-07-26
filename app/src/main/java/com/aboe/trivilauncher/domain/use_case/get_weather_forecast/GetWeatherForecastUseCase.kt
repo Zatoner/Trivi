@@ -12,6 +12,7 @@ class GetWeatherForecastUseCase @Inject constructor(
 ) {
     val TAG = "GetWeatherForecastUseCase"
 
+    // move to Dispatchers.IO context
     suspend operator fun invoke(lon: Double, lat: Double): String {
         return try {
             val weather = weatherRepository.getWeather(lon, lat)

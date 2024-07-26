@@ -31,6 +31,8 @@ object Constants {
 
     const val MIN_APP_USAGE_TIME_MINUTES = 1
 
+    val MODEL_NAME = "gemini-1.5-flash"
+
     val GEMINI_CONFIG = generationConfig {
         temperature = 0.6f
         topK = 10

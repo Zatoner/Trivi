@@ -11,6 +11,7 @@ class GetNotificationsUseCase @Inject constructor(
     private val TAG = "GetNotificationsUseCase"
 
     // think of using gemini to summarize notifications
+    // move to Dispatchers.IO context
     suspend operator fun invoke(): String {
         try {
             notificationRepository.deleteNotifications()

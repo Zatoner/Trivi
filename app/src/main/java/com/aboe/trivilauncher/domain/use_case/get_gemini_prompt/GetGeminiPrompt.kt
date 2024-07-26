@@ -10,6 +10,8 @@ import com.aboe.trivilauncher.domain.use_case.get_notifications.GetNotifications
 import com.aboe.trivilauncher.domain.use_case.get_user_location.GetUserLocationUseCase
 import com.aboe.trivilauncher.domain.use_case.get_weather_forecast.GetWeatherForecastUseCase
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -23,17 +25,27 @@ class GetGeminiPrompt @Inject constructor(
 ){
     val TAG = "getGeminiPrompt"
 
+    // move to Dispatchers.IO context
+    // maybe use an object for this
     suspend operator fun invoke(prompt: String = "default") : String {
         val actualPrompt = if (prompt == "default") Constants.DEFAULT_PROMPT else prompt
 
-        val userName = "Adrien"
-        val userInfo = "I'm a 23 year old developer who likes technology and music, currently living in Paris, France." +
-                "on the look out for work as a software engineer since I'm a recent graduate. I love cats"
+        val userName = "Not implemented"
+        val userInfo = "Not implemented"
 
         val currentTime = SimpleDateFormat("HH:mm:ss, dd/MM/yyyy", Locale.getDefault()).format(Date())
-        val installedApps = getAllAppPackagesAndNames(context)
-        val notifications = getNotificationsUseCase()
-        val userLocation = getUserLocationUseCase()
+
+        val (notifications, userLocation, installedApps) = coroutineScope {
+            val notificationsDeferred = async { getNotificationsUseCase() }
+            val userLocationDeferred = async { getUserLocationUseCase() }
+            val installedAppsDeferred = async { getAllAppPackagesAndNames(context) }
+
+            Triple(
+                notificationsDeferred.await(),
+                userLocationDeferred.await(),
+                installedAppsDeferred.await()
+            )
+        }
 
         val weatherForecast = userLocation?.let {
             getWeatherForecastUseCase(lat = it.latitude, lon = it.longitude)
@@ -52,9 +64,9 @@ class GetGeminiPrompt @Inject constructor(
             appendLine("--------------------------------------------------")
             appendLine("PROMPT CONTEXT:")
             // last request
+            appendLine("Current time: $currentTime")
             appendLine("User name: $userName")
             appendLine("User info: $userInfo")
-            appendLine("Current time: $currentTime")
             appendLine("User location: $userLocationString")
             appendLine("")
 
@@ -126,6 +138,7 @@ class GetGeminiPrompt @Inject constructor(
         val geocoder = Geocoder(context, Locale.getDefault())
 
         return try {
+            @Suppress("DEPRECATION")
             geocoder.getFromLocation(lat, lon, 1)
                 ?.firstOrNull()?.let { address ->
                     val city = address.locality ?: "Unknown city"
