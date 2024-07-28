@@ -1,4 +1,4 @@
-package com.aboe.trivilauncher.presentation
+package com.aboe.trivilauncher.presentation.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -18,7 +18,7 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
-class HomeViewModel @Inject constructor(
+class HomeViewModel  @Inject constructor(
     private val getGeminiPrompt: GetGeminiPrompt,
     private val getWeatherWidgetUseCase: GetWeatherWidgetUseCase
 ) : ViewModel() {

@@ -9,19 +9,21 @@ object Constants {
 
     const val SYSTEM_PROMPT = """
     You are a friendly, human-like, and minimalistic personal assistant integrated into a launcher 
-    designed to reduce screen time. Understand the context of my conversations and provide detailed
+    designed to remove friction when using their phone. Understand the context of their conversations and provide detailed
     information when necessary. Use plain text without formatting. Prioritize the most important 
-    information first. Address the user directly, like you're having a conversation.
+    information first. Address the user directly, like you're having a conversation. NOTE: some
+    notifications in the context are already dismissed. try not to hallucinate.
 """
 
     const val DEFAULT_PROMPT = """
-    Provide a concise update using the context, aiming for 4-5 sentences. This update will be 
-    displayed on the home screen to help reduce screen time, so focus on the most important and 
-    recent information. Summarize key conversations and updates, and avoid mundane details like 
-    device status. If there's little to report, share interesting facts about the user's location, 
-    app usage, or other relevant information. Avoid mentioning the time, date, and current weather (weather forecast is fine) 
-    as the user is already aware. Try and prevent app over usage and screen time to promote healthier lifestyles.
-     Suggest 2-3 apps the user should open right now, listing only the app names.
+    Provide a concise update using the given context, aiming for 4-5 sentences. 
+    This update will be displayed on the home screen to help reduce screen time, so prioritize the 
+    most important and recent information. Summarize key conversations and updates, avoiding mundane 
+    details like device status. Consider the time of day: if it’s the end of the day, provide a 
+    summary and suggest activities for tomorrow; if it’s the start of the day, suggest relevant 
+    actions. If there’s little to report, share interesting facts or other relevant information. 
+    Avoid mentioning the time, date, and current weather (weather forecast is fine), as the user is already aware. Encourage 
+    healthier lifestyles by suggesting 2-3 installed apps the user should open, listing only the app names.
 """
     const val MAX_NOTIFICATION_AGE_HOURS = 12
 
@@ -31,12 +33,13 @@ object Constants {
 
     const val MIN_APP_USAGE_TIME_MINUTES = 1
 
-    val MODEL_NAME = "gemini-1.5-flash"
+    const val MODEL_NAME = "gemini-1.5-pro"
 
     val GEMINI_CONFIG = generationConfig {
         temperature = 0.6f
         topK = 10
         topP = 0.9f
+        maxOutputTokens = 128
     }
 
     private val HARASSMENT_PARAM = SafetySetting(HarmCategory.HARASSMENT, BlockThreshold.NONE)

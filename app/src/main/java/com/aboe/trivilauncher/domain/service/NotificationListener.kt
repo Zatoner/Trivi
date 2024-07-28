@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.service.notification.NotificationListenerService
 import android.service.notification.StatusBarNotification
 import android.text.SpannableString
+import androidx.core.app.NotificationCompat
 import com.aboe.trivilauncher.data.local.entity.NotificationEntity
 import com.aboe.trivilauncher.domain.use_case.add_notification.AddNotificationUseCase
 import dagger.hilt.android.AndroidEntryPoint
@@ -25,11 +26,16 @@ class NotificationListener : NotificationListenerService() {
     override fun onNotificationPosted(sbn: StatusBarNotification?) {
         sbn?.let {
             val bundle = sbn.notification.extras
+
+            // DEPRECATE
+            val importance = sbn.notification.priority
+
             val notificationTitle = bundle.getStringOrNull("android.title").orEmpty()
 
             val id = sbn.id.toLong() + sbn.packageName.hashCode() +
                     notificationTitle.hashCode()
 
+            // consider adding importance to the notification entity
             val notification = NotificationEntity(
                 id = id,
                 title = bundle.getStringOrNull("android.title"),
@@ -42,7 +48,10 @@ class NotificationListener : NotificationListenerService() {
 
             serviceScope.launch {
                 // implement a custom filter here
-                if (!notification.title.isNullOrBlank() && !notification.text.isNullOrBlank()) {
+                if (importance >= NotificationCompat.PRIORITY_DEFAULT &&
+                    !notification.title.isNullOrBlank() &&
+                    !notification.text.isNullOrBlank())
+                {
                     addNotificationUseCase(notification)
                 }
             }
