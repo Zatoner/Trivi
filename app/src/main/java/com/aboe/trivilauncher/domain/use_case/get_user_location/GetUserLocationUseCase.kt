@@ -45,7 +45,7 @@ class GetUserLocationUseCase @Inject constructor(
                     }
 
                 continuation.invokeOnCancellation {
-                    //
+                    Log.e(TAG, "getUserLocationUseCase cancelled")
                 }
             }
         } catch (e: Exception) {

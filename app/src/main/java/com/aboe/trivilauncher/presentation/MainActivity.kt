@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -25,11 +26,6 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
-    override fun onResume() {
-        super.onResume()
-        println("MainActivity onResume")
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -41,7 +37,9 @@ class MainActivity : ComponentActivity() {
 
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
-                    snackbarHost = { snackbarHostState },
+                    snackbarHost = {
+                      SnackbarHost(hostState = snackbarHostState)
+                    },
                     bottomBar = {
                         BottomAppBar(
                             containerColor = MaterialTheme.colorScheme.secondary
@@ -62,7 +60,7 @@ class MainActivity : ComponentActivity() {
                             GeminiScreen()
                         }
                         composable<Path.HomeScreen> {
-                            HomeScreen()
+                            HomeScreen(snackbarHostState = snackbarHostState)
                         }
                     }
                 }

@@ -20,7 +20,7 @@ class GetWeatherWidgetUseCase @Inject constructor(
     operator fun invoke() : Flow<Resource<WeatherWidgetItem>> = flow {
 
         val location = getUserLocationUseCase() ?: run {
-            emit(Resource.Error("Location not found"))
+            emit(Resource.Error("Location not found, check permissions"))
             return@flow
         }
 
@@ -35,6 +35,7 @@ class GetWeatherWidgetUseCase @Inject constructor(
                 iconResource = weatherWidget.icon.toIconResource()
             )))
 
+            return@flow
         } catch (e: Exception) {
             Log.e(TAG, "Error fetching weather data ${e.message}")
             emit(Resource.Error("Error fetching weather data"))
