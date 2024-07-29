@@ -38,7 +38,7 @@ data class WeatherDto(
     fun toWeatherWidgetItem() : WeatherWidgetItem {
         return WeatherWidgetItem(
             temperature = "${main.temp.toInt()}°C",
-            icon = weather[0].icon
+            iconCode = weather[0].icon
         )
     }
 }

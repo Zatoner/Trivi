@@ -13,10 +13,13 @@ import androidx.compose.material3.SnackbarResult
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
+import com.aboe.trivilauncher.R
 import com.aboe.trivilauncher.presentation.home.HomeUIEvent
 import com.aboe.trivilauncher.presentation.home.HomeViewModel
 import kotlinx.coroutines.flow.collectLatest
@@ -66,7 +69,12 @@ fun HomeScreen(
                 DateWeatherHeader(state = state, modifier = Modifier.fillMaxWidth())
             }
             item {
-                Spacer(modifier = Modifier.height(64.dp))
+                Spacer(modifier = Modifier.height(24.dp))
+                PillLabel(text = "Spotlight", icon = ImageVector.vectorResource(id = R.drawable.outline_spotlight_48))
+            }
+            item {
+                Spacer(modifier = Modifier.height(128.dp))
+                PillLabel(text = "Debug", icon = ImageVector.vectorResource(id = R.drawable.outline_question_mark_48))
                 RequestNotificationPermissionScreen()
                 RequestUsageStatsPermissionScreen()
             }

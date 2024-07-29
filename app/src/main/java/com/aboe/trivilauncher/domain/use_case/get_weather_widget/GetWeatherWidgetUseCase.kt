@@ -32,7 +32,7 @@ class GetWeatherWidgetUseCase @Inject constructor(
             )
 
             emit(Resource.Success(weatherWidget.copy(
-                iconResource = weatherWidget.icon.toIconResource()
+                iconResource = weatherWidget.iconCode.toIconResource()
             )))
 
             return@flow
