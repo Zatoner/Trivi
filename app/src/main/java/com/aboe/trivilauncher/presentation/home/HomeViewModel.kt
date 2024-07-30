@@ -5,44 +5,34 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.aboe.trivilauncher.common.Resource
+import com.aboe.trivilauncher.domain.use_case.get_gemini_prompt.GetGeminiPromptUseCase
+import com.aboe.trivilauncher.domain.use_case.get_gemini_response.GetGeminiResponseUseCase
 import com.aboe.trivilauncher.domain.use_case.get_weather_widget.GetWeatherWidgetUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
 import javax.inject.Inject
 
 @HiltViewModel
-class HomeViewModel  @Inject constructor(
-    private val getWeatherWidgetUseCase: GetWeatherWidgetUseCase
+class HomeViewModel @Inject constructor(
+    private val getWeatherWidgetUseCase: GetWeatherWidgetUseCase,
+    private val getGeminiPromptUseCase: GetGeminiPromptUseCase,
+    private val getGeminiResponseUseCase: GetGeminiResponseUseCase
 ) : ViewModel() {
 
-//    private val generativeModel = GenerativeModel(
-//        modelName = Constants.MODEL_NAME,
-//        apiKey = BuildConfig.geminiKey,
-//        generationConfig = Constants.GEMINI_CONFIG,
-//        safetySettings = Constants.SAFETY_SETTINGS
-//    )
-
-//    viewModelScope.launch {
-//        withContext(Dispatchers.IO) {
-//            val prompt = getGeminiPrompt()
-//            println(prompt)
-//
-//            val response = generativeModel.generateContent(
-//                content {
-//                    text(prompt)
-//                }
-//            )
-//            println(response.text)
-//        }
-//    }
+    private var lastUpdate: Long = 0
+    private val updateThreshold = 5 * 60 * 1000
 
     private var weatherJob: Job? = null
+    private var geminiJob: Job? = null
 
     private val _state = mutableStateOf(HomeState())
     val state: State<HomeState> = _state
@@ -50,18 +40,69 @@ class HomeViewModel  @Inject constructor(
     private val _eventFlow = MutableSharedFlow<HomeUIEvent>()
     val eventFlow = _eventFlow
 
-//    init {
-//        updateContents()
-//    }
-
     fun updateContents() {
-        println("Home on resume")
+        val currentTime = System.currentTimeMillis()
+        val timeSinceLastUpdate = currentTime - lastUpdate
 
         _state.value = _state.value.copy(currentDateDate = getFormattedDate())
-        getWeatherWidget()
+
+        if (timeSinceLastUpdate > updateThreshold) {
+            lastUpdate = currentTime
+
+            viewModelScope.launch {
+                withContext(Dispatchers.IO) {
+                    updateWeatherWidget()
+                    updateGeminiResponse()
+                }
+            }
+        }
     }
 
-    private fun getWeatherWidget() {
+    fun resetLastUpdate() {
+        lastUpdate = 0
+    }
+
+    private suspend fun updateGeminiResponse() {
+        geminiJob?.let { job ->
+            job.cancel()
+
+            _state.value = _state.value.copy(
+                geminiItem = null,
+                isGeminiLoading = false
+            )
+        }
+
+        val prompt = getGeminiPromptUseCase()
+
+        geminiJob = getGeminiResponseUseCase(prompt)
+            .onEach { result ->
+                val newState = when (result) {
+                    is Resource.Success -> _state.value.copy(
+                        geminiItem = result.data,
+                        isGeminiLoading = false
+                    )
+
+                    is Resource.Loading -> _state.value.copy(
+                        geminiItem = result.data,
+                        isGeminiLoading = true
+                    )
+
+                    is Resource.Error -> {
+                        result.message?.let { message ->
+                            _eventFlow.emit(HomeUIEvent.ShowSnackbar(message))
+                        }
+
+                        _state.value.copy(
+                            geminiItem = null,
+                            isGeminiLoading = false
+                        )
+                    }
+                }
+                _state.value = newState
+            }.launchIn(viewModelScope)
+    }
+
+    private suspend fun updateWeatherWidget() {
         weatherJob?.let { job ->
             job.cancel()
 
@@ -71,31 +112,30 @@ class HomeViewModel  @Inject constructor(
             )
         }
 
-        weatherJob = getWeatherWidgetUseCase().onEach { result ->
-            when (result) {
-                is Resource.Success -> {
-                    _state.value = _state.value.copy(
+        weatherJob = getWeatherWidgetUseCase()
+            .onEach { result ->
+                val newState = when (result) {
+                    is Resource.Success -> _state.value.copy(
                         weatherItem = result.data,
                         isWeatherLoading = false
                     )
-                }
-                is Resource.Loading -> {
-                    _state.value = _state.value.copy(
+
+                    is Resource.Loading -> _state.value.copy(
                         isWeatherLoading = true
                     )
-                }
-                is Resource.Error -> {
-                    _state.value = _state.value.copy(
-                        isWeatherLoading = false
-                    )
 
-                    result.message?.let { message ->
-                        _eventFlow.emit(HomeUIEvent.ShowSnackbar(message))
+                    is Resource.Error -> {
+                        result.message?.let { message ->
+                            _eventFlow.emit(HomeUIEvent.ShowSnackbar(message))
+                        }
+
+                        _state.value.copy(
+                            isWeatherLoading = false
+                        )
                     }
                 }
-            }
-
-        }.launchIn(viewModelScope)
+                _state.value = newState
+            }.launchIn(viewModelScope)
     }
 
     private fun getFormattedDate(): String {

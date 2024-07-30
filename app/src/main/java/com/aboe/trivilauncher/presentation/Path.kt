@@ -4,9 +4,9 @@ import kotlinx.serialization.Serializable
 
 sealed class Path {
     @Serializable
-    object AppsScreen
+    object AppsScreen : Path()
     @Serializable
-    object GeminiScreen
+    object GeminiScreen : Path()
     @Serializable
-    object HomeScreen
+    object HomeScreen : Path()
 }

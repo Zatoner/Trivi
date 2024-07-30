@@ -1,5 +1,7 @@
 package com.aboe.trivilauncher.presentation.home.components
 
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -10,8 +12,13 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
@@ -49,6 +56,7 @@ fun HomeScreen(
                     when (snackbarResult) {
                         SnackbarResult.Dismissed -> Unit
                         SnackbarResult.ActionPerformed -> {
+                            viewModel.resetLastUpdate()
                             viewModel.updateContents()
                         }
                     }
@@ -71,6 +79,15 @@ fun HomeScreen(
             item {
                 Spacer(modifier = Modifier.height(24.dp))
                 PillLabel(text = "Spotlight", icon = ImageVector.vectorResource(id = R.drawable.outline_spotlight_48))
+                Spacer(modifier = Modifier.height(8.dp))
+
+                state.geminiItem?.let { geminiItem ->
+                    if (!state.isGeminiLoading) {
+                        TypingText(text = geminiItem.response)
+                    }
+                }
+
+                //handle loading state
             }
             item {
                 Spacer(modifier = Modifier.height(128.dp))
@@ -80,4 +97,22 @@ fun HomeScreen(
             }
         }
     }
+}
+
+@Composable
+fun TypingText(text: String) {
+    var displayedText by remember { mutableStateOf("") }
+    val animationProgress = remember { Animatable(0.0f) }
+
+    LaunchedEffect(text) {
+        animationProgress.animateTo(
+            targetValue = 1.0f,
+            animationSpec = tween(durationMillis = text.length * 15) // Adjust timing
+        )
+    }
+
+    val numCharsToDisplay = (animationProgress.value * text.length).toInt()
+    displayedText = text.substring(0, numCharsToDisplay)
+
+    Text(text = displayedText)
 }

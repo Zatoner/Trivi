@@ -17,7 +17,7 @@ import java.util.Date
 import java.util.Locale
 import javax.inject.Inject
 
-class GetGeminiPrompt @Inject constructor(
+class GetGeminiPromptUseCase @Inject constructor(
     private val getNotificationsUseCase: GetNotificationsUseCase,
     private val getUserLocationUseCase: GetUserLocationUseCase,
     private val getWeatherForecastUseCase: GetWeatherForecastUseCase,
@@ -27,8 +27,8 @@ class GetGeminiPrompt @Inject constructor(
 
     // move to Dispatchers.IO context
     // maybe use an object for this
-    suspend operator fun invoke(prompt: String = "default") : String {
-        val actualPrompt = if (prompt == "default") Constants.DEFAULT_PROMPT else prompt
+    suspend operator fun invoke(prompt: String? = null) : String {
+        val actualPrompt = prompt ?: Constants.DEFAULT_PROMPT
 
         val userName = "Not implemented"
         val userInfo = "Not implemented"

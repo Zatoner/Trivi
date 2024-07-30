@@ -22,7 +22,7 @@ class GetWeatherForecastUseCase @Inject constructor(
                 // move to data class
                 appendLine("- Now: ${weather.main}, Description: ${weather.description}, " +
                         "Temp: ${weather.temp} °C, Feels Like: ${weather.feelsLike} °C, " +
-                        "Humidity: ${weather.humidity}%, Wind Speed: ${weather.windSpeed} m/s, " +
+                        "Humidity: ${weather.humidity}%, Wind Speed: ${weather.windSpeed} km/h, " +
                         "Clouds: ${weather.clouds}%, Visibility: ${weather.visibility} meters")
 
                 forecast.forEach { weather ->
@@ -35,7 +35,7 @@ class GetWeatherForecastUseCase @Inject constructor(
                     // move to data class
                     appendLine("- $time, ${weather.description}, " +
                             "${weather.temp} °C, Humidity: ${weather.humidity}%, " +
-                            "Wind Speed: ${weather.windSpeed} m/s")
+                            "Wind Speed: ${weather.windSpeed} km/h")
                 }
             }
 

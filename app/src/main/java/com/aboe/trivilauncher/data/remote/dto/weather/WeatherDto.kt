@@ -29,7 +29,7 @@ data class WeatherDto(
             temp = main.temp,
             feelsLike = main.feelsLike,
             humidity = main.humidity,
-            windSpeed = wind.speed,
+            windSpeed = wind.speed * 3.6,
             clouds = clouds.all,
             visibility = visibility
         )
