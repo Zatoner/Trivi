@@ -16,7 +16,6 @@ class GetWeatherWidgetUseCase @Inject constructor(
 ) {
     val TAG = "GetWeatherWidgetUseCase"
 
-    // move to Dispatchers.IO context
     operator fun invoke() : Flow<Resource<WeatherWidgetItem>> = flow {
 
         val location = getUserLocationUseCase() ?: run {

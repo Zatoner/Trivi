@@ -25,7 +25,6 @@ class GetGeminiPromptUseCase @Inject constructor(
 ){
     val TAG = "getGeminiPrompt"
 
-    // move to Dispatchers.IO context
     // maybe use an object for this
     suspend operator fun invoke(prompt: String? = null) : String {
         val actualPrompt = prompt ?: Constants.DEFAULT_PROMPT

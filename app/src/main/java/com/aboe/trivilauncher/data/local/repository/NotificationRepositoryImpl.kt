@@ -1,20 +1,21 @@
 package com.aboe.trivilauncher.data.local.repository
 
-import android.app.Application
+import android.content.Context
 import android.content.pm.PackageManager
 import com.aboe.trivilauncher.common.Constants
 import com.aboe.trivilauncher.data.local.NotificationDao
 import com.aboe.trivilauncher.data.local.entity.NotificationEntity
 import com.aboe.trivilauncher.domain.model.NotificationItem
 import com.aboe.trivilauncher.domain.repository.NotificationRepository
+import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 
 class NotificationRepositoryImpl @Inject constructor(
     private val notificationDao: NotificationDao,
-    app: Application
+    @ApplicationContext private val context: Context
 ) : NotificationRepository {
 
-    private val packageManager: PackageManager = app.packageManager
+    private val packageManager: PackageManager = context.packageManager
 
     override suspend fun getAllNotifications(): List<NotificationItem> {
         val notifications = notificationDao.getAllNotifications()

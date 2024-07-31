@@ -17,7 +17,6 @@ class GetUserLocationUseCase @Inject constructor(
 ) {
     val TAG = "getUserLocationUseCase"
 
-    // move to Dispatchers.IO context
     suspend operator fun invoke(): Location? {
         // do better permission handling in the future
         val fineLocationPerm = (ContextCompat

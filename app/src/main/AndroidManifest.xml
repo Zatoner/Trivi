@@ -15,6 +15,7 @@
     <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES"
         tools:ignore="QueryAllPackagesPermission" />
 
+<!--    android:screenOrientation="portrait"-->
     <application
         android:name=".TriviLauncher"
         android:allowBackup="true"
@@ -30,7 +31,6 @@
         <activity
             android:name=".presentation.MainActivity"
             android:exported="true"
-            android:screenOrientation="portrait"
             android:theme="@style/Theme.TriviLauncher">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

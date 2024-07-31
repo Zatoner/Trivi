@@ -5,6 +5,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.aboe.trivilauncher.common.Resource
+import com.aboe.trivilauncher.domain.model.GeminiItem
+import com.aboe.trivilauncher.domain.model.WeatherWidgetItem
+import com.aboe.trivilauncher.domain.use_case.get_formatted_date.GetFormattedDateUseCase
 import com.aboe.trivilauncher.domain.use_case.get_gemini_prompt.GetGeminiPromptUseCase
 import com.aboe.trivilauncher.domain.use_case.get_gemini_response.GetGeminiResponseUseCase
 import com.aboe.trivilauncher.domain.use_case.get_weather_widget.GetWeatherWidgetUseCase
@@ -16,16 +19,14 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.text.SimpleDateFormat
-import java.util.Calendar
-import java.util.Locale
 import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val getWeatherWidgetUseCase: GetWeatherWidgetUseCase,
     private val getGeminiPromptUseCase: GetGeminiPromptUseCase,
-    private val getGeminiResponseUseCase: GetGeminiResponseUseCase
+    private val getGeminiResponseUseCase: GetGeminiResponseUseCase,
+    private val getFormattedDateUseCase: GetFormattedDateUseCase
 ) : ViewModel() {
 
     private var lastUpdate: Long = 0
@@ -34,8 +35,14 @@ class HomeViewModel @Inject constructor(
     private var weatherJob: Job? = null
     private var geminiJob: Job? = null
 
-    private val _state = mutableStateOf(HomeState())
-    val state: State<HomeState> = _state
+    private val _dateState = mutableStateOf("")
+    val dateState: State<String> = _dateState
+
+    private val _weatherState = mutableStateOf<Resource<WeatherWidgetItem>>(Resource.Loading())
+    val weatherState: State<Resource<WeatherWidgetItem>> = _weatherState
+
+    private val _geminiState = mutableStateOf<Resource<GeminiItem>>(Resource.Loading())
+    val geminiState: State<Resource<GeminiItem>> = _geminiState
 
     private val _eventFlow = MutableSharedFlow<HomeUIEvent>()
     val eventFlow = _eventFlow
@@ -44,7 +51,7 @@ class HomeViewModel @Inject constructor(
         val currentTime = System.currentTimeMillis()
         val timeSinceLastUpdate = currentTime - lastUpdate
 
-        _state.value = _state.value.copy(currentDateDate = getFormattedDate())
+        _dateState.value = getFormattedDateUseCase()
 
         if (timeSinceLastUpdate > updateThreshold) {
             lastUpdate = currentTime
@@ -62,101 +69,58 @@ class HomeViewModel @Inject constructor(
         lastUpdate = 0
     }
 
-    private suspend fun updateGeminiResponse() {
-        geminiJob?.let { job ->
-            job.cancel()
+    fun completeGeminiAnimationState() {
+        when (_geminiState.value) {
+            is Resource.Success -> {
+                _geminiState.value.data?.let {
+                    _geminiState.value = Resource.Success(it.copy(hasAnimated = true))
+                }
+            }
 
-            _state.value = _state.value.copy(
-                geminiItem = null,
-                isGeminiLoading = false
-            )
+            else -> Unit
         }
+    }
+
+    private suspend fun updateGeminiResponse() {
+        geminiJob?.cancel()
+        _geminiState.value = Resource.Loading()
 
         val prompt = getGeminiPromptUseCase()
 
         geminiJob = getGeminiResponseUseCase(prompt)
             .onEach { result ->
-                val newState = when (result) {
-                    is Resource.Success -> _state.value.copy(
-                        geminiItem = result.data,
-                        isGeminiLoading = false
-                    )
-
-                    is Resource.Loading -> _state.value.copy(
-                        geminiItem = result.data,
-                        isGeminiLoading = true
-                    )
-
+                _geminiState.value = when (result) {
+                    is Resource.Success -> Resource.Success(result.data as GeminiItem)
+                    is Resource.Loading -> Resource.Loading(result.data)
                     is Resource.Error -> {
                         result.message?.let { message ->
                             _eventFlow.emit(HomeUIEvent.ShowSnackbar(message))
                         }
 
-                        _state.value.copy(
-                            geminiItem = null,
-                            isGeminiLoading = false
-                        )
+                        Resource.Error("Couldn't get Gemini response")
                     }
                 }
-                _state.value = newState
             }.launchIn(viewModelScope)
     }
 
     private suspend fun updateWeatherWidget() {
-        weatherJob?.let { job ->
-            job.cancel()
-
-            _state.value = _state.value.copy(
-                weatherItem = null,
-                isWeatherLoading = false
-            )
-        }
+        weatherJob?.cancel()
+        _weatherState.value = Resource.Loading()
 
         weatherJob = getWeatherWidgetUseCase()
             .onEach { result ->
-                val newState = when (result) {
-                    is Resource.Success -> _state.value.copy(
-                        weatherItem = result.data,
-                        isWeatherLoading = false
-                    )
-
-                    is Resource.Loading -> _state.value.copy(
-                        isWeatherLoading = true
-                    )
-
+                _weatherState.value = when (result) {
+                    is Resource.Success -> Resource.Success(result.data as WeatherWidgetItem)
+                    is Resource.Loading -> Resource.Loading()
                     is Resource.Error -> {
                         result.message?.let { message ->
                             _eventFlow.emit(HomeUIEvent.ShowSnackbar(message))
                         }
 
-                        _state.value.copy(
-                            isWeatherLoading = false
-                        )
+                       Resource.Error("No weather data")
                     }
                 }
-                _state.value = newState
             }.launchIn(viewModelScope)
-    }
-
-    private fun getFormattedDate(): String {
-        val calendar = Calendar.getInstance()
-
-        val dayOfWeek = SimpleDateFormat("EEEE", Locale.getDefault()).format(calendar.time)
-        val dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH)
-        val dayOfMonthSuffix = getDayOfMonthSuffix(dayOfMonth)
-        val month = SimpleDateFormat("MMMM", Locale.getDefault()).format(calendar.time)
-
-        return "$dayOfWeek ${dayOfMonth}$dayOfMonthSuffix, $month"
-    }
-
-    private fun getDayOfMonthSuffix(day: Int): String {
-        return when {
-            day in 11..13 -> "th"
-            day % 10 == 1 -> "st"
-            day % 10 == 2 -> "nd"
-            day % 10 == 3 -> "rd"
-            else -> "th"
-        }
     }
 
 }

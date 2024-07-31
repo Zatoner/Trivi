@@ -1,11 +1,10 @@
 package com.aboe.trivilauncher.presentation.home.components
 
-import androidx.compose.animation.core.Animatable
-import androidx.compose.animation.core.tween
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -13,13 +12,12 @@ import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Text
+import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
@@ -27,6 +25,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import com.aboe.trivilauncher.R
+import com.aboe.trivilauncher.common.Resource
 import com.aboe.trivilauncher.presentation.home.HomeUIEvent
 import com.aboe.trivilauncher.presentation.home.HomeViewModel
 import kotlinx.coroutines.flow.collectLatest
@@ -36,13 +35,16 @@ fun HomeScreen(
     snackbarHostState : SnackbarHostState,
     viewModel: HomeViewModel = hiltViewModel(),
 ) {
-    val state = viewModel.state.value
+    val dateState by viewModel.dateState
+    val weatherState by viewModel.weatherState
+
+    val geminiState by viewModel.geminiState
 
     LifecycleEventEffect(Lifecycle.Event.ON_RESUME) {
         viewModel.updateContents()
     }
 
-    LaunchedEffect(key1 = true) {
+    LaunchedEffect(viewModel) {
         viewModel.eventFlow.collectLatest { event ->
             when (event) {
 
@@ -68,26 +70,54 @@ fun HomeScreen(
 
     Box(modifier = Modifier.fillMaxSize()) {
         LazyColumn(
+            verticalArrangement = Arrangement.spacedBy(24.dp),
             modifier = Modifier
                 .fillMaxSize()
-                .padding(horizontal = 28.dp)
+                .padding(horizontal = 24.dp)
         ) {
             item {
-                Spacer(modifier = Modifier.height(24.dp))
-                DateWeatherHeader(state = state, modifier = Modifier.fillMaxWidth())
+                Spacer(modifier = Modifier.height(36.dp))
+
+                Row {
+                    
+                    if (dateState.isNotEmpty()) {
+                        Text(text = dateState)
+                    }
+
+                    VerticalDivider(
+                        thickness = 1.5.dp,
+                        color = Color.Black,
+                        modifier = Modifier
+                            .padding(horizontal = 8.dp)
+                            .height(24.dp)
+                    )
+
+                    when (weatherState) {
+                        is Resource.Success -> weatherState.data?.let { data ->
+                            WeatherWidget(weatherItem = data)
+                        }
+
+                        is Resource.Loading -> Text(text = "...")
+                        is Resource.Error -> Text(text = weatherState.message ?: "Error")
+                    }
+                }
             }
             item {
-                Spacer(modifier = Modifier.height(24.dp))
                 PillLabel(text = "Spotlight", icon = ImageVector.vectorResource(id = R.drawable.outline_spotlight_48))
                 Spacer(modifier = Modifier.height(8.dp))
 
-                state.geminiItem?.let { geminiItem ->
-                    if (!state.isGeminiLoading) {
-                        TypingText(text = geminiItem.response)
+                when (geminiState) {
+                    is Resource.Success -> geminiState.data?.let { data ->
+                        TypingText(
+                            text = data.response,
+                            animate = !data.hasAnimated,
+                            animationCallback = viewModel::completeGeminiAnimationState
+                        )
                     }
-                }
 
-                //handle loading state
+                    is Resource.Loading -> Text(text = "Generating...") //make shimmer instead
+                    is Resource.Error -> Text(text = geminiState.message ?: "Error")
+                }
             }
             item {
                 Spacer(modifier = Modifier.height(128.dp))
@@ -97,22 +127,4 @@ fun HomeScreen(
             }
         }
     }
-}
-
-@Composable
-fun TypingText(text: String) {
-    var displayedText by remember { mutableStateOf("") }
-    val animationProgress = remember { Animatable(0.0f) }
-
-    LaunchedEffect(text) {
-        animationProgress.animateTo(
-            targetValue = 1.0f,
-            animationSpec = tween(durationMillis = text.length * 15) // Adjust timing
-        )
-    }
-
-    val numCharsToDisplay = (animationProgress.value * text.length).toInt()
-    displayedText = text.substring(0, numCharsToDisplay)
-
-    Text(text = displayedText)
 }

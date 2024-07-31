@@ -7,11 +7,8 @@ import javax.inject.Inject
 class GetNotificationsUseCase @Inject constructor(
     private val notificationRepository: NotificationRepository
 ) {
-
     private val TAG = "GetNotificationsUseCase"
 
-    // think of using gemini to summarize notifications
-    // move to Dispatchers.IO context
     suspend operator fun invoke(): String {
         try {
             notificationRepository.deleteNotifications()
@@ -26,6 +23,7 @@ class GetNotificationsUseCase @Inject constructor(
                 return "No notifications found"
             }
 
+            //maybe add a limit to the number of notifications returned
             val result = buildString {
                 notifications.forEach { notification ->
                     appendLine(notification)
