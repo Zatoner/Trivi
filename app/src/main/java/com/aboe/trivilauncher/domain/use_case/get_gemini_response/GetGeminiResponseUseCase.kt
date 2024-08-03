@@ -5,13 +5,17 @@ import com.aboe.trivilauncher.BuildConfig
 import com.aboe.trivilauncher.common.Constants
 import com.aboe.trivilauncher.common.Resource
 import com.aboe.trivilauncher.domain.model.GeminiItem
+import com.aboe.trivilauncher.domain.use_case.get_app.GetAppUseCase
+import com.aboe.trivilauncher.domain.use_case.get_app.StringType
 import com.google.ai.client.generativeai.GenerativeModel
 import com.google.ai.client.generativeai.type.Content
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
-class GetGeminiResponseUseCase @Inject constructor() {
+class GetGeminiResponseUseCase @Inject constructor(
+    private val getAppUseCase: GetAppUseCase
+) {
 
     val TAG = "GetGeminiResponseUseCase"
 
@@ -28,15 +32,25 @@ class GetGeminiResponseUseCase @Inject constructor() {
             val chat = generativeModel.startChat(history = history)
             var result = GeminiItem("")
 
-            chat.sendMessageStream(prompt).collect { textChunk ->
-                result = result.copy(response = result.response + (textChunk.text ?: ""))
-                emit(Resource.Loading(data = result))
+            val response = chat.sendMessage(prompt).text
+
+            // do proper error handling
+            response?.let {
+                val userResponse = response.substringBefore("-END-")
+                result = result.copy(response = userResponse)
+
+                val appStringResponse = response.substringAfter("-END-")
+                val suggestedAppsString = appStringResponse.split(",").map { it.trim() }
+                val apps = suggestedAppsString.mapNotNull { appName ->
+                    getAppUseCase(appName, StringType.APP_NAME)
+                }
+                result = result.copy(apps = apps)
+
+                emit(Resource.Success(result))
+                return@flow
             }
 
-            // get apps
-            //result = result.copy(apps = "")
-
-            emit(Resource.Success(result))
+            emit(Resource.Error("Error getting Gemini response"))
             return@flow
         } catch(e: Exception) {
             Log.e(TAG, "Error getting Gemini response ${e.message}", e)
@@ -45,3 +59,12 @@ class GetGeminiResponseUseCase @Inject constructor() {
     }
 
 }
+
+//            chat.sendMessageStream(prompt).collect { textChunk ->
+//                println(textChunk.text)
+//                val updatedResponse = (result.response + (textChunk.text ?: ""))
+//                appString = updatedResponse.substringAfter("-END-")
+//
+//                result = result.copy(response = updatedResponse.substringBefore("-END-"))
+//                emit(Resource.Loading(data = result))
+//            }

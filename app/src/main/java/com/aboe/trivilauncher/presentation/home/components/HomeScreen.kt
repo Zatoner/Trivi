@@ -7,7 +7,9 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
@@ -108,11 +110,23 @@ fun HomeScreen(
 
                 when (geminiState) {
                     is Resource.Success -> geminiState.data?.let { data ->
+                        
                         TypingText(
                             text = data.response,
                             animate = !data.hasAnimated,
                             animationCallback = viewModel::completeGeminiAnimationState
                         )
+
+                        Spacer(modifier = Modifier.height(8.dp))
+
+                        if (data.hasAnimated) {
+                            LazyRow{
+                                items(data.apps.size) { index ->
+                                    Text(text = data.apps[index].label)
+                                    Spacer(modifier = Modifier.width(8.dp))
+                                }
+                            }
+                        }
                     }
 
                     is Resource.Loading -> Text(text = "Generating...") //make shimmer instead

@@ -6,7 +6,8 @@ import android.content.pm.PackageManager
 import android.location.Geocoder
 import android.util.Log
 import com.aboe.trivilauncher.common.Constants
-import com.aboe.trivilauncher.domain.use_case.get_app_name.GetAppNameUseCase
+import com.aboe.trivilauncher.domain.use_case.get_app.GetAppUseCase
+import com.aboe.trivilauncher.domain.use_case.get_app.StringType
 import com.aboe.trivilauncher.domain.use_case.get_notifications.GetNotificationsUseCase
 import com.aboe.trivilauncher.domain.use_case.get_user_location.GetUserLocationUseCase
 import com.aboe.trivilauncher.domain.use_case.get_weather_forecast.GetWeatherForecastUseCase
@@ -22,7 +23,7 @@ class GetGeminiPromptUseCase @Inject constructor(
     private val getNotificationsUseCase: GetNotificationsUseCase,
     private val getUserLocationUseCase: GetUserLocationUseCase,
     private val getWeatherForecastUseCase: GetWeatherForecastUseCase,
-    private val getAppNameUseCase: GetAppNameUseCase,
+    private val getAppUseCase: GetAppUseCase,
     @ApplicationContext private val context: Context
 ){
     val TAG = "getGeminiPrompt"
@@ -79,7 +80,7 @@ class GetGeminiPromptUseCase @Inject constructor(
             appendLine(notifications)
             //appendLine("")
 
-            appendLine("Apps used more than ${Constants.MIN_APP_USAGE_TIME_MINUTES} minutes in the last ${Constants.MAX_APP_USAGE_AGE_DAYS} days:")
+            appendLine("Installed Apps used more than ${Constants.MIN_APP_USAGE_TIME_MINUTES} minutes in the last ${Constants.MAX_APP_USAGE_AGE_DAYS} days:")
             appendLine(installedApps)
             appendLine("")
 
@@ -117,7 +118,7 @@ class GetGeminiPromptUseCase @Inject constructor(
         ).
         groupBy { usage ->
                 try {
-                    getAppNameUseCase(usage.packageName)
+                    getAppUseCase(usage.packageName, StringType.APP_PACKAGE_NAME)?.label
                 } catch (e: PackageManager.NameNotFoundException) {
                     null // Skip apps not found
                 }
