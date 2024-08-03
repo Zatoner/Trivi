@@ -2,10 +2,12 @@ package com.aboe.trivilauncher.di
 
 import android.app.Application
 import androidx.room.Room
-import com.aboe.trivilauncher.data.local.NotificationDatabase
-import com.aboe.trivilauncher.data.local.repository.NotificationRepositoryImpl
+import com.aboe.trivilauncher.data.local.apps.repository.AppRepositoryImpl
+import com.aboe.trivilauncher.data.local.notifications.NotificationDatabase
+import com.aboe.trivilauncher.data.local.notifications.repository.NotificationRepositoryImpl
 import com.aboe.trivilauncher.data.remote.OpenWeatherApi
 import com.aboe.trivilauncher.data.remote.repository.WeatherRepositoryImpl
+import com.aboe.trivilauncher.domain.repository.AppRepository
 import com.aboe.trivilauncher.domain.repository.NotificationRepository
 import com.aboe.trivilauncher.domain.repository.WeatherRepository
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -35,8 +37,8 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideNotificationRepository(db: NotificationDatabase, app: Application): NotificationRepository {
-        return NotificationRepositoryImpl(db.notificationDao, app)
+    fun provideNotificationRepository(db: NotificationDatabase, appRepository: AppRepository): NotificationRepository {
+        return NotificationRepositoryImpl(db.notificationDao, appRepository)
     }
 
     @Provides
@@ -71,5 +73,12 @@ object AppModule {
         return LocationServices
             .getFusedLocationProviderClient(app)
     }
+
+    @Provides
+    @Singleton
+    fun provideAppRepository(app: Application): AppRepository {
+        return AppRepositoryImpl(app)
+    }
+
 
 }

@@ -1,6 +1,6 @@
 package com.aboe.trivilauncher.domain.repository
 
-import com.aboe.trivilauncher.data.local.entity.NotificationEntity
+import com.aboe.trivilauncher.data.local.notifications.entity.NotificationEntity
 import com.aboe.trivilauncher.domain.model.NotificationItem
 
 interface NotificationRepository {

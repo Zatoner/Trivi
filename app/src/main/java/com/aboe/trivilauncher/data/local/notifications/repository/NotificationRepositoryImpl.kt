@@ -1,27 +1,23 @@
-package com.aboe.trivilauncher.data.local.repository
+package com.aboe.trivilauncher.data.local.notifications.repository
 
-import android.content.Context
-import android.content.pm.PackageManager
 import com.aboe.trivilauncher.common.Constants
-import com.aboe.trivilauncher.data.local.NotificationDao
-import com.aboe.trivilauncher.data.local.entity.NotificationEntity
+import com.aboe.trivilauncher.data.local.notifications.NotificationDao
+import com.aboe.trivilauncher.data.local.notifications.entity.NotificationEntity
 import com.aboe.trivilauncher.domain.model.NotificationItem
+import com.aboe.trivilauncher.domain.repository.AppRepository
 import com.aboe.trivilauncher.domain.repository.NotificationRepository
-import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 
 class NotificationRepositoryImpl @Inject constructor(
     private val notificationDao: NotificationDao,
-    @ApplicationContext private val context: Context
+    private val appRepository: AppRepository,
 ) : NotificationRepository {
-
-    private val packageManager: PackageManager = context.packageManager
 
     override suspend fun getAllNotifications(): List<NotificationItem> {
         val notifications = notificationDao.getAllNotifications()
 
         return notifications.map {
-            val appName = getAppNameFromPackageName(it.packageName)
+            val appName = appRepository.getAppByPackageName(it.packageName)?.label
             it.toNotificationItem().copy(packageName = appName ?: it.packageName)
         }
     }
@@ -36,17 +32,6 @@ class NotificationRepositoryImpl @Inject constructor(
 
         val cutoffTimestamp = currentTimeMillis - twentyFourHoursInMillis
         notificationDao.deleteNotifications(cutoffTimestamp)
-    }
-
-    // move this to data class?
-    // responsible for ApkAssets spam, try caching
-    private fun getAppNameFromPackageName(packageName: String): String? {
-        return try {
-            val applicationInfo = packageManager.getApplicationInfo(packageName, 0)
-            packageManager.getApplicationLabel(applicationInfo).toString()
-        } catch (e: PackageManager.NameNotFoundException) {
-            null
-        }
     }
 
 }

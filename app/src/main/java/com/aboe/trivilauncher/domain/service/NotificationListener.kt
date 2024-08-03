@@ -5,7 +5,7 @@ import android.service.notification.NotificationListenerService
 import android.service.notification.StatusBarNotification
 import android.text.SpannableString
 import androidx.core.app.NotificationCompat
-import com.aboe.trivilauncher.data.local.entity.NotificationEntity
+import com.aboe.trivilauncher.data.local.notifications.entity.NotificationEntity
 import com.aboe.trivilauncher.domain.use_case.add_notification.AddNotificationUseCase
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope

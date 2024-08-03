@@ -6,6 +6,7 @@ import android.content.pm.PackageManager
 import android.location.Geocoder
 import android.util.Log
 import com.aboe.trivilauncher.common.Constants
+import com.aboe.trivilauncher.domain.use_case.get_app_name.GetAppNameUseCase
 import com.aboe.trivilauncher.domain.use_case.get_notifications.GetNotificationsUseCase
 import com.aboe.trivilauncher.domain.use_case.get_user_location.GetUserLocationUseCase
 import com.aboe.trivilauncher.domain.use_case.get_weather_forecast.GetWeatherForecastUseCase
@@ -21,6 +22,7 @@ class GetGeminiPromptUseCase @Inject constructor(
     private val getNotificationsUseCase: GetNotificationsUseCase,
     private val getUserLocationUseCase: GetUserLocationUseCase,
     private val getWeatherForecastUseCase: GetWeatherForecastUseCase,
+    private val getAppNameUseCase: GetAppNameUseCase,
     @ApplicationContext private val context: Context
 ){
     val TAG = "getGeminiPrompt"
@@ -95,15 +97,15 @@ class GetGeminiPromptUseCase @Inject constructor(
             appendLine("--------------------------------------------------")
         }
 
+        print(finalPrompt)
         return finalPrompt
     }
 
     // move to UseCase
     // responsible for ApkAssets spam, try caching
-    private fun getAllAppPackagesAndNames(context: Context): String {
+    private suspend fun getAllAppPackagesAndNames(context: Context): String {
         val usageStatsManager = context.getSystemService(Context.USAGE_STATS_SERVICE)
                 as UsageStatsManager
-        val packageManager = context.packageManager
 
         val endTime = System.currentTimeMillis()
         val startTime = endTime - (Constants.MAX_APP_USAGE_AGE_DAYS * 24 * 60 * 60 * 1000)
@@ -115,8 +117,7 @@ class GetGeminiPromptUseCase @Inject constructor(
         ).
         groupBy { usage ->
                 try {
-                    val appInfo = packageManager.getApplicationInfo(usage.packageName, 0)
-                    packageManager.getApplicationLabel(appInfo).toString()
+                    getAppNameUseCase(usage.packageName)
                 } catch (e: PackageManager.NameNotFoundException) {
                     null // Skip apps not found
                 }

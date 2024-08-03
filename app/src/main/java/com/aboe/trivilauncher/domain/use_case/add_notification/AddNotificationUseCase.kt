@@ -1,7 +1,7 @@
 package com.aboe.trivilauncher.domain.use_case.add_notification
 
 import android.util.Log
-import com.aboe.trivilauncher.data.local.entity.NotificationEntity
+import com.aboe.trivilauncher.data.local.notifications.entity.NotificationEntity
 import com.aboe.trivilauncher.domain.repository.NotificationRepository
 import javax.inject.Inject
 

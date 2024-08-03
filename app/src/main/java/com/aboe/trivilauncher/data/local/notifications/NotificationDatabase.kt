@@ -1,8 +1,8 @@
-package com.aboe.trivilauncher.data.local
+package com.aboe.trivilauncher.data.local.notifications
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
-import com.aboe.trivilauncher.data.local.entity.NotificationEntity
+import com.aboe.trivilauncher.data.local.notifications.entity.NotificationEntity
 
 @Database(
     entities = [NotificationEntity::class],

@@ -7,7 +7,7 @@ data class WeatherItem(
     val temp: Double,
     val feelsLike: Double,
     val humidity: Int,
-    val windSpeed: Double,
+    val windSpeed: Int,
     val clouds: Int,
     val visibility: Int
 )

@@ -1,4 +1,4 @@
-package com.aboe.trivilauncher.data.local.entity
+package com.aboe.trivilauncher.data.local.notifications.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

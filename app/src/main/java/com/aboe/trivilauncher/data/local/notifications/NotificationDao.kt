@@ -1,4 +1,4 @@
-package com.aboe.trivilauncher.data.local
+package com.aboe.trivilauncher.data.local.notifications
 
 import androidx.room.Dao
 import androidx.room.Insert
@@ -6,7 +6,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
-import com.aboe.trivilauncher.data.local.entity.NotificationEntity
+import com.aboe.trivilauncher.data.local.notifications.entity.NotificationEntity
 
 @Dao
 interface NotificationDao {
