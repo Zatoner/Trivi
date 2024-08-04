@@ -1,5 +1,6 @@
 package com.aboe.trivilauncher.presentation.home.components
 
+import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
 import androidx.compose.material3.Text
@@ -13,11 +14,11 @@ import androidx.compose.ui.Modifier
 
 @Composable
 fun TypingText(
+    modifier: Modifier = Modifier,
     text: String,
     animate: Boolean = true,
     animationCallback: () -> Unit = {},
-    charactersPerSecond: Int = 50,
-    modifier: Modifier = Modifier
+    charactersPerSecond: Int = 50
 ) {
     var displayedText by remember { mutableStateOf("") }
     val animationProgress = remember { Animatable(0.0f) }
@@ -39,5 +40,5 @@ fun TypingText(
         displayedText = text.substring(0, numCharsToDisplay)
     }
 
-    Text(text = displayedText, modifier = modifier)
+    Text(text = displayedText, modifier = modifier.animateContentSize())
 }

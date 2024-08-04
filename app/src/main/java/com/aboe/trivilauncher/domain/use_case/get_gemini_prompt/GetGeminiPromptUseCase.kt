@@ -20,10 +20,10 @@ import java.util.Locale
 import javax.inject.Inject
 
 class GetGeminiPromptUseCase @Inject constructor(
-    private val getNotificationsUseCase: GetNotificationsUseCase,
-    private val getUserLocationUseCase: GetUserLocationUseCase,
-    private val getWeatherForecastUseCase: GetWeatherForecastUseCase,
-    private val getAppUseCase: GetAppUseCase,
+    private val getNotifications: GetNotificationsUseCase,
+    private val getUserLocation: GetUserLocationUseCase,
+    private val getWeatherForecast: GetWeatherForecastUseCase,
+    private val getApp: GetAppUseCase,
     @ApplicationContext private val context: Context
 ){
     val TAG = "getGeminiPrompt"
@@ -38,8 +38,8 @@ class GetGeminiPromptUseCase @Inject constructor(
         val currentTime = SimpleDateFormat("HH:mm:ss, dd/MM/yyyy", Locale.getDefault()).format(Date())
 
         val (notifications, userLocation, installedApps) = coroutineScope {
-            val notificationsDeferred = async { getNotificationsUseCase() }
-            val userLocationDeferred = async { getUserLocationUseCase() }
+            val notificationsDeferred = async { getNotifications() }
+            val userLocationDeferred = async { getUserLocation() }
             val installedAppsDeferred = async { getAllAppPackagesAndNames(context) }
 
             Triple(
@@ -50,7 +50,7 @@ class GetGeminiPromptUseCase @Inject constructor(
         }
 
         val weatherForecast = userLocation?.let {
-            getWeatherForecastUseCase(lat = it.latitude, lon = it.longitude)
+            getWeatherForecast(lat = it.latitude, lon = it.longitude)
         } ?: "No weather forecast available"
 
         val userLocationString = userLocation?.let { location ->
@@ -118,7 +118,7 @@ class GetGeminiPromptUseCase @Inject constructor(
         ).
         groupBy { usage ->
                 try {
-                    getAppUseCase(usage.packageName, StringType.APP_PACKAGE_NAME)?.label
+                    getApp(usage.packageName, StringType.APP_PACKAGE_NAME)?.label
                 } catch (e: PackageManager.NameNotFoundException) {
                     null // Skip apps not found
                 }

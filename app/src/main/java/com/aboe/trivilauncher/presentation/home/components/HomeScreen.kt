@@ -1,15 +1,17 @@
 package com.aboe.trivilauncher.presentation.home.components
 
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
@@ -32,6 +34,7 @@ import com.aboe.trivilauncher.presentation.home.HomeUIEvent
 import com.aboe.trivilauncher.presentation.home.HomeViewModel
 import kotlinx.coroutines.flow.collectLatest
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun HomeScreen(
     snackbarHostState : SnackbarHostState,
@@ -112,6 +115,7 @@ fun HomeScreen(
                     is Resource.Success -> geminiState.data?.let { data ->
                         
                         TypingText(
+                            modifier = Modifier.fillMaxWidth(),
                             text = data.response,
                             animate = !data.hasAnimated,
                             animationCallback = viewModel::completeGeminiAnimationState
@@ -120,10 +124,20 @@ fun HomeScreen(
                         Spacer(modifier = Modifier.height(8.dp))
 
                         if (data.hasAnimated) {
-                            LazyRow{
-                                items(data.apps.size) { index ->
-                                    Text(text = data.apps[index].label)
-                                    Spacer(modifier = Modifier.width(8.dp))
+                            FlowRow (
+                                modifier = Modifier.fillMaxWidth().animateContentSize(),
+                                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                verticalArrangement = Arrangement.spacedBy(8.dp)
+                            ){
+                                data.apps.forEachIndexed { index, app ->
+                                    AppPill(
+                                        appInfo = app,
+                                        animate = true,
+                                        delay = index * 300,
+                                        onClick = {
+                                            viewModel.launchApp(app.packageName)
+                                        }
+                                    )
                                 }
                             }
                         }
@@ -134,7 +148,7 @@ fun HomeScreen(
                 }
             }
             item {
-                Spacer(modifier = Modifier.height(128.dp))
+                Spacer(modifier = Modifier.height(16.dp))
                 PillLabel(text = "Debug", icon = ImageVector.vectorResource(id = R.drawable.outline_question_mark_48))
                 RequestNotificationPermissionScreen()
                 RequestUsageStatsPermissionScreen()

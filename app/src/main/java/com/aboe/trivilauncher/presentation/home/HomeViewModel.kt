@@ -11,6 +11,7 @@ import com.aboe.trivilauncher.domain.use_case.get_formatted_date.GetFormattedDat
 import com.aboe.trivilauncher.domain.use_case.get_gemini_prompt.GetGeminiPromptUseCase
 import com.aboe.trivilauncher.domain.use_case.get_gemini_response.GetGeminiResponseUseCase
 import com.aboe.trivilauncher.domain.use_case.get_weather_widget.GetWeatherWidgetUseCase
+import com.aboe.trivilauncher.domain.use_case.launch_app.LaunchAppUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -23,10 +24,11 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val getWeatherWidgetUseCase: GetWeatherWidgetUseCase,
-    private val getGeminiPromptUseCase: GetGeminiPromptUseCase,
-    private val getGeminiResponseUseCase: GetGeminiResponseUseCase,
-    private val getFormattedDateUseCase: GetFormattedDateUseCase
+    private val getWeatherWidget: GetWeatherWidgetUseCase,
+    private val getGeminiPrompt: GetGeminiPromptUseCase,
+    private val getGeminiResponse: GetGeminiResponseUseCase,
+    private val getFormattedDate: GetFormattedDateUseCase,
+    private val launchAppIntent: LaunchAppUseCase
 ) : ViewModel() {
 
     private var lastUpdate: Long = 0
@@ -51,7 +53,7 @@ class HomeViewModel @Inject constructor(
         val currentTime = System.currentTimeMillis()
         val timeSinceLastUpdate = currentTime - lastUpdate
 
-        _dateState.value = getFormattedDateUseCase()
+        _dateState.value = getFormattedDate()
 
         if (timeSinceLastUpdate > updateThreshold) {
             lastUpdate = currentTime
@@ -81,13 +83,22 @@ class HomeViewModel @Inject constructor(
         }
     }
 
+    fun launchApp(packageName: String) {
+        if (!launchAppIntent(packageName)) {
+            viewModelScope.launch {
+                _eventFlow.emit(HomeUIEvent.ShowSnackbar("Couldn't launch app"))
+            }
+        }
+    }
+
     private suspend fun updateGeminiResponse() {
         geminiJob?.cancel()
         _geminiState.value = Resource.Loading()
 
-        val prompt = getGeminiPromptUseCase()
+        val prompt = getGeminiPrompt()
 
-        geminiJob = getGeminiResponseUseCase(prompt)
+        // can be improved
+        geminiJob = getGeminiResponse(prompt)
             .onEach { result ->
                 _geminiState.value = when (result) {
                     is Resource.Success -> Resource.Success(result.data as GeminiItem)
@@ -107,7 +118,8 @@ class HomeViewModel @Inject constructor(
         weatherJob?.cancel()
         _weatherState.value = Resource.Loading()
 
-        weatherJob = getWeatherWidgetUseCase()
+        // can be improved
+        weatherJob = getWeatherWidget()
             .onEach { result ->
                 _weatherState.value = when (result) {
                     is Resource.Success -> Resource.Success(result.data as WeatherWidgetItem)

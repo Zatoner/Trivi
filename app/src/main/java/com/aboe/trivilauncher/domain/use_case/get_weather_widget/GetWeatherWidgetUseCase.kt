@@ -12,13 +12,13 @@ import javax.inject.Inject
 
 class GetWeatherWidgetUseCase @Inject constructor(
     private val weatherRepository: WeatherRepository,
-    private val getUserLocationUseCase: GetUserLocationUseCase,
+    private val getUserLocation: GetUserLocationUseCase,
 ) {
     val TAG = "GetWeatherWidgetUseCase"
 
     operator fun invoke() : Flow<Resource<WeatherWidgetItem>> = flow {
 
-        val location = getUserLocationUseCase() ?: run {
+        val location = getUserLocation() ?: run {
             emit(Resource.Error("Location not found, check permissions"))
             return@flow
         }

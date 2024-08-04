@@ -14,7 +14,7 @@ import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
 class GetGeminiResponseUseCase @Inject constructor(
-    private val getAppUseCase: GetAppUseCase
+    private val getApp: GetAppUseCase
 ) {
 
     val TAG = "GetGeminiResponseUseCase"
@@ -32,20 +32,25 @@ class GetGeminiResponseUseCase @Inject constructor(
             val chat = generativeModel.startChat(history = history)
             var result = GeminiItem("")
 
+            // with timeout
             val response = chat.sendMessage(prompt).text
 
             // do proper error handling
             response?.let {
-                val userResponse = response.substringBefore("-END-")
+                val userResponse = response
+                    .substringBefore("-END-")
+                    .filterNot { it == '\n' || it == '\r' }
+
                 result = result.copy(response = userResponse)
 
-                val appStringResponse = response.substringAfter("-END-")
-                val suggestedAppsString = appStringResponse.split(",").map { it.trim() }
-                val apps = suggestedAppsString.mapNotNull { appName ->
-                    getAppUseCase(appName, StringType.APP_NAME)
-                }
-                result = result.copy(apps = apps)
+                val apps = response
+                    .substringAfter("-END-")
+                    .split(",").map { it.trim() }
+                    .mapNotNull { appName ->
+                        getApp(appName, StringType.APP_NAME)
+                    }
 
+                result = result.copy(apps = apps)
                 emit(Resource.Success(result))
                 return@flow
             }
@@ -59,12 +64,3 @@ class GetGeminiResponseUseCase @Inject constructor(
     }
 
 }
-
-//            chat.sendMessageStream(prompt).collect { textChunk ->
-//                println(textChunk.text)
-//                val updatedResponse = (result.response + (textChunk.text ?: ""))
-//                appString = updatedResponse.substringAfter("-END-")
-//
-//                result = result.copy(response = updatedResponse.substringBefore("-END-"))
-//                emit(Resource.Loading(data = result))
-//            }

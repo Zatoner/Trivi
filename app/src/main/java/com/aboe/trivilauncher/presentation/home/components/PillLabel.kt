@@ -48,7 +48,6 @@ fun PillLabel(
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier
         ) {
             Icon(imageVector = icon, contentDescription = "Icon", modifier.size(16.dp))
             Spacer(modifier = Modifier.width(4.dp))
