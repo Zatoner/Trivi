@@ -118,7 +118,9 @@ fun HomeScreen(
                             modifier = Modifier.fillMaxWidth(),
                             text = data.response,
                             animate = !data.hasAnimated,
-                            animationCallback = viewModel::completeGeminiAnimationState
+                            animationCallback = {
+                                viewModel.completeGeminiAnimationState()
+                            }
                         )
 
                         Spacer(modifier = Modifier.height(8.dp))
@@ -126,8 +128,8 @@ fun HomeScreen(
                         if (data.hasAnimated) {
                             FlowRow (
                                 modifier = Modifier.fillMaxWidth().animateContentSize(),
-                                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                                verticalArrangement = Arrangement.spacedBy(8.dp)
+                                horizontalArrangement = Arrangement.spacedBy(4.dp),
+                                verticalArrangement = Arrangement.spacedBy(4.dp)
                             ){
                                 data.apps.forEachIndexed { index, app ->
                                     AppPill(

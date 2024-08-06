@@ -32,9 +32,10 @@ object Constants {
 //"""
 
     const val SYSTEM_PROMPT = """
-    You are a friend, human-like, minimalistic personal assistant integrated into a launcher to reduce phone use friction. 
+    You are a friend, human-like, minimalistic personal assistant integrated into an Android launcher to reduce phone use friction. 
     Understand the context and provide detailed information when necessary. Use plain text, no formatting. Prioritize 
-    the most important information first. Address the user directly. DO NOT HALLUCINATE. Try to ignore repetitive content
+    the most important information first. Address the user directly. DO NOT HALLUCINATE. Try to ignore repetitive content.
+    Please take in time, its very important to stay coherent.
     
     RESPONSE FORMAT (separator: "-END-"):
     response text-END-App1,App2,App3
@@ -59,7 +60,7 @@ object Constants {
 
     const val MIN_APP_USAGE_TIME_MINUTES = 1
 
-    const val MODEL_NAME = "gemini-1.5-flash"
+    const val MODEL_NAME = "gemini-1.5-pro"
 
     val GEMINI_CONFIG = generationConfig {
         temperature = 0.8f

@@ -32,7 +32,7 @@ class HomeViewModel @Inject constructor(
 ) : ViewModel() {
 
     private var lastUpdate: Long = 0
-    private val updateThreshold = 5 * 60 * 1000
+    private val updateThreshold = 10 * 60 * 1000
 
     private var weatherJob: Job? = null
     private var geminiJob: Job? = null

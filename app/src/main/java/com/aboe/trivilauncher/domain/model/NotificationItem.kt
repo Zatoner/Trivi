@@ -16,7 +16,7 @@ data class NotificationItem(
     override fun toString(): String {
 
         val time = SimpleDateFormat(
-            "HH:mm",
+            "HH:mm (dd/MM)",
             Locale.getDefault()
         ).format(Date(timestamp))
 

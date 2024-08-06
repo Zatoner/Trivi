@@ -11,16 +11,11 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
@@ -35,14 +30,10 @@ fun PillLabel(
     icon: ImageVector,
     modifier: Modifier = Modifier
 ) {
-    var height by remember { mutableStateOf(0.dp) }
 
     Box(
         modifier = modifier
-            .onSizeChanged {
-                height = it.height.dp
-            }
-            .clip(RoundedCornerShape(height / 2))
+            .clip(RoundedCornerShape(50))
             .background(Color.Black.copy(alpha = .05f))
             .padding(8.dp)
     ) {

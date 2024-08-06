@@ -26,7 +26,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
-import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
@@ -46,7 +45,6 @@ fun AppPill(
     animate: Boolean = false,
     delay: Int = 0
 ) {
-    var height by remember { mutableStateOf(0.dp) }
     var visible by remember { mutableStateOf(false) }
 
     LaunchedEffect(key1 = animate) {
@@ -63,15 +61,12 @@ fun AppPill(
     ) {
         Box(
             modifier = modifier
-                .onSizeChanged {
-                    height = it.height.dp
-                }
                 .border(
                     width = 1.dp,
                     color = Color.Black.copy(alpha = 0.2f),
-                    shape = RoundedCornerShape(height / 2)
+                    shape = RoundedCornerShape(50)
                 )
-                .clip(RoundedCornerShape(height / 2))
+                .clip(RoundedCornerShape(50))
                 .clickable {
                     onClick()
                 }.padding(10.dp)

@@ -1,6 +1,7 @@
 package com.aboe.trivilauncher.data.local.apps.repository
 
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import com.aboe.trivilauncher.domain.model.CompactAppInfo
 import com.aboe.trivilauncher.domain.repository.AppRepository
@@ -26,8 +27,9 @@ class AppRepositoryImpl @Inject constructor(
                 val label = packageManager.getApplicationLabel(appInfo).toString()
                 val packageName = appInfo.packageName
                 val icon = packageManager.getApplicationIcon(appInfo)
+                val isLaunchable = isLaunchable(packageName)
 
-                CompactAppInfo(label, packageName, icon)
+                CompactAppInfo(label, packageName, icon, isLaunchable)
             }
             .associateBy { appInfo ->
                 appInfo.packageName
@@ -54,6 +56,14 @@ class AppRepositoryImpl @Inject constructor(
     fun invalidateCache() {
         cachedApps = null
         appNameToPackageNameMap = null
+    }
+
+    private fun isLaunchable(packageName: String): Boolean {
+        val launchIntent = packageManager.getLaunchIntentForPackage(packageName)
+
+        return launchIntent != null &&
+                launchIntent.action == Intent.ACTION_MAIN &&
+                launchIntent.categories?.contains(Intent.CATEGORY_LAUNCHER) == true
     }
 
 }
