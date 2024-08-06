@@ -22,12 +22,20 @@ class AppRepositoryImpl @Inject constructor(
             return apps.values.toList()
         }
 
+        val launcherIntent = Intent(Intent.ACTION_MAIN)
+        launcherIntent.addCategory(Intent.CATEGORY_LAUNCHER)
+
+        val launchableActivities = packageManager.queryIntentActivities(launcherIntent, PackageManager.MATCH_ALL)
+        val launchablePackageNames = launchableActivities.map {
+            it.activityInfo.packageName
+        }.toSet()
+
         val installedApps = packageManager.getInstalledApplications(PackageManager.GET_META_DATA)
             .map { appInfo ->
                 val label = packageManager.getApplicationLabel(appInfo).toString()
                 val packageName = appInfo.packageName
                 val icon = packageManager.getApplicationIcon(appInfo)
-                val isLaunchable = isLaunchable(packageName)
+                val isLaunchable = launchablePackageNames.contains(packageName)
 
                 CompactAppInfo(label, packageName, icon, isLaunchable)
             }
@@ -56,14 +64,6 @@ class AppRepositoryImpl @Inject constructor(
     fun invalidateCache() {
         cachedApps = null
         appNameToPackageNameMap = null
-    }
-
-    private fun isLaunchable(packageName: String): Boolean {
-        val launchIntent = packageManager.getLaunchIntentForPackage(packageName)
-
-        return launchIntent != null &&
-                launchIntent.action == Intent.ACTION_MAIN &&
-                launchIntent.categories?.contains(Intent.CATEGORY_LAUNCHER) == true
     }
 
 }

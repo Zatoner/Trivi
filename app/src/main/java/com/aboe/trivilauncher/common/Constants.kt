@@ -44,7 +44,7 @@ object Constants {
 """
 
     const val DEFAULT_PROMPT = """
-    Provide a concise update in roughly 5 sentences based on the context. This update will be on the home 
+    Provide a concise update in roughly 3 sentences based on the context. This update will be on the home 
     screen to reduce screen time, so prioritize recent and important information. Summarize key 
     conversations and updates, avoiding mundane details. Consider the time of day: at the end of 
     the day, provide a summary and suggest tomorrow's activities; at the start of the day, 
@@ -60,7 +60,7 @@ object Constants {
 
     const val MIN_APP_USAGE_TIME_MINUTES = 1
 
-    const val MODEL_NAME = "gemini-1.5-pro"
+    const val MODEL_NAME = "gemini-1.5-flash-latest"
 
     val GEMINI_CONFIG = generationConfig {
         temperature = 0.8f
