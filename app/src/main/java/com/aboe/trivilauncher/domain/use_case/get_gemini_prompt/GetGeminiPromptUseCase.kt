@@ -63,6 +63,8 @@ class GetGeminiPromptUseCase @Inject constructor(
             appendLine("SYSTEM PROMPT: ${Constants.SYSTEM_PROMPT}")
             appendLine("")
             appendLine("PROMPT: $actualPrompt")
+//            appendLine("")
+//            appendLine("PERSONALITY SETTING: behave like X")
             appendLine("--------------------------------------------------")
             appendLine("PROMPT CONTEXT:")
             // last request

@@ -1,4 +1,4 @@
-package com.aboe.trivilauncher.presentation
+package com.aboe.trivilauncher.presentation.nav
 
 import kotlinx.serialization.Serializable
 
