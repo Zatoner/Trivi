@@ -50,6 +50,7 @@ fun HomeScreen(
     }
 
     LaunchedEffect(viewModel) {
+        //maybe move this up to navscreen
         viewModel.eventFlow.collectLatest { event ->
             when (event) {
 

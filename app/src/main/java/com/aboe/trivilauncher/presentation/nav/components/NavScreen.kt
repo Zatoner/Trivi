@@ -56,7 +56,10 @@ fun NavScreen(
             ) {
                 BottomBar(
                     navController = navController,
-                    screenState = viewModel.screenState.value
+                    screenState = viewModel.screenState.value,
+                    onDoneAction = { text ->
+                        viewModel.setGeminiText(text)
+                    }
                 )
             }
         }
@@ -85,7 +88,7 @@ fun NavScreen(
                     slideOutVertically { height -> height } + scaleOut()
                 }
             ) {
-                GeminiScreen()
+                GeminiScreen(inputText = viewModel.geminiText)
                 viewModel.setScreenState(ScreenState.GEMINI)
             }
             composable<Path.HomeScreen> {

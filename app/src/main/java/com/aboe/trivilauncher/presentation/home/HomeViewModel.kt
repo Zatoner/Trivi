@@ -46,6 +46,7 @@ class HomeViewModel @Inject constructor(
     private val _geminiState = mutableStateOf<Resource<GeminiItem>>(Resource.Loading())
     val geminiState: State<Resource<GeminiItem>> = _geminiState
 
+    //maybe move this up to navscreen
     private val _eventFlow = MutableSharedFlow<HomeUIEvent>()
     val eventFlow = _eventFlow
 
