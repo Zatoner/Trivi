@@ -11,7 +11,6 @@ import com.aboe.trivilauncher.domain.use_case.launch_app.LaunchAppUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
@@ -24,10 +23,8 @@ class AppsViewModel @Inject constructor(
     val appsState: State<List<CompactAppInfo>> = _appsState
 
     init {
-        viewModelScope.launch {
-            withContext(Dispatchers.Main) {
-                _appsState.value = getApps()
-            }
+        viewModelScope.launch(Dispatchers.IO) {
+            _appsState.value = getApps()
         }
     }
 

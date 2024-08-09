@@ -11,6 +11,8 @@ import com.aboe.trivilauncher.domain.use_case.get_app.StringType
 import com.aboe.trivilauncher.domain.use_case.get_notifications.GetNotificationsUseCase
 import com.aboe.trivilauncher.domain.use_case.get_user_location.GetUserLocationUseCase
 import com.aboe.trivilauncher.domain.use_case.get_weather_forecast.GetWeatherForecastUseCase
+import com.google.ai.client.generativeai.type.Content
+import com.google.ai.client.generativeai.type.content
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
@@ -29,9 +31,7 @@ class GetGeminiPromptUseCase @Inject constructor(
     val TAG = "getGeminiPrompt"
 
     // maybe use an object for this
-    suspend operator fun invoke(prompt: String? = null) : String {
-        val actualPrompt = prompt ?: Constants.DEFAULT_PROMPT
-
+    suspend operator fun invoke(prompt: String? = null, addContext: Boolean = true) : Pair<String, List<Content>> {
         val userName = "Not implemented"
         val userInfo = "Not implemented"
 
@@ -58,11 +58,9 @@ class GetGeminiPromptUseCase @Inject constructor(
         } ?: "Location not available"
 
         // use StringBuilder for better performance
-        val finalPrompt = buildString {
+        val systemContext = buildString {
             appendLine("--------------------------------------------------")
             appendLine("SYSTEM PROMPT: ${Constants.SYSTEM_PROMPT}")
-            appendLine("")
-            appendLine("PROMPT: $actualPrompt")
 //            appendLine("")
 //            appendLine("PERSONALITY SETTING: behave like X")
             appendLine("--------------------------------------------------")
@@ -100,8 +98,10 @@ class GetGeminiPromptUseCase @Inject constructor(
             appendLine("--------------------------------------------------")
         }
 
-        print(finalPrompt)
-        return finalPrompt
+        val history = if (addContext) listOf(content(role = "model") { text(systemContext) }) else emptyList()
+        val promptString = prompt ?: Constants.DEFAULT_PROMPT
+
+        return Pair(promptString, history)
     }
 
     // move to UseCase

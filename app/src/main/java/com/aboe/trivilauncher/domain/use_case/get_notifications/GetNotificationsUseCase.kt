@@ -26,7 +26,9 @@ class GetNotificationsUseCase @Inject constructor(
             //maybe add a limit to the number of notifications returned
             // only add non null package names
             val result = buildString {
-                notifications.forEach { notification ->
+                notifications
+//                    .take(50)
+                    .forEach { notification ->
                     appendLine(notification)
                 }
             }

@@ -19,7 +19,6 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
@@ -59,11 +58,9 @@ class HomeViewModel @Inject constructor(
         if (timeSinceLastUpdate > updateThreshold) {
             lastUpdate = currentTime
 
-            viewModelScope.launch {
-                withContext(Dispatchers.IO) {
-                    updateWeatherWidget()
-                    updateGeminiResponse()
-                }
+            viewModelScope.launch(Dispatchers.IO) {
+                updateWeatherWidget()
+                updateGeminiResponse()
             }
         }
     }
@@ -96,10 +93,10 @@ class HomeViewModel @Inject constructor(
         geminiJob?.cancel()
         _geminiState.value = Resource.Loading()
 
-        val prompt = getGeminiPrompt()
+        val (prompt, history) = getGeminiPrompt()
 
         // can be improved
-        geminiJob = getGeminiResponse(prompt)
+        geminiJob = getGeminiResponse(prompt, history)
             .onEach { result ->
                 _geminiState.value = when (result) {
                     is Resource.Success -> Resource.Success(result.data as GeminiItem)

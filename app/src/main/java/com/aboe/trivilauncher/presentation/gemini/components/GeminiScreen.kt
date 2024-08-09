@@ -18,8 +18,8 @@ fun GeminiScreen(
     viewModel: GeminiViewModel = hiltViewModel()
 ) {
     LaunchedEffect(inputText) {
-        inputText.collectLatest {
-            println(it)
+        inputText.collectLatest { text ->
+            viewModel.newRequest(text)
         }
     }
 
