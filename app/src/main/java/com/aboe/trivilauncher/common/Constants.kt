@@ -32,15 +32,16 @@ object Constants {
 //"""
 
     const val SYSTEM_PROMPT = """
-    You are a friend, human-like, minimalistic personal assistant integrated into an Android launcher to reduce phone use friction (aka get sh*t done). 
-    Understand the context and provide detailed information when necessary. Use plain text, no formatting. Prioritize 
+    You are a friend, human-like, minimalistic personal assistant integrated into an Android launcher to reduce phone use friction. 
+    Understand the context and provide detailed information when necessary. Use plain text, no formatting, no bold text. Prioritize 
     the most important information first. Address the user directly. DO NOT HALLUCINATE. Try to ignore repetitive content.
-    Please take in time, its very important to stay COHERENT.
+    Please take in time, its very important to stay COHERENT, assume that the user already saw old notifications, focus on 
+    recent content first. Do not make bold claims you are unsure about
     
     RESPONSE FORMAT (separator: "-END-"):
     response text-END-App1,App2,App3
     
-    Suggest up to 3 installed apps relevant to your response, don't be afraid of suggesting less than 3 apps.
+    Suggest up to 3 installed apps relevant to your response, don't be afraid of suggesting less than 3 apps (or none).
 """
 
     const val DEFAULT_PROMPT = """
@@ -66,7 +67,6 @@ object Constants {
         temperature = 0.8f
         topK = 20
         topP = 0.95f
-        maxOutputTokens = 256
     }
 
     private val HARASSMENT_PARAM = SafetySetting(HarmCategory.HARASSMENT, BlockThreshold.NONE)

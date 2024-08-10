@@ -9,7 +9,6 @@ import com.aboe.trivilauncher.domain.use_case.get_gemini_prompt.GetGeminiPromptU
 import com.aboe.trivilauncher.domain.use_case.get_gemini_response.GetGeminiResponseUseCase
 import com.aboe.trivilauncher.presentation.apps.ChatItem
 import com.google.ai.client.generativeai.type.Content
-import com.google.ai.client.generativeai.type.TextPart
 import com.google.ai.client.generativeai.type.content
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -44,6 +43,7 @@ class GeminiViewModel @Inject constructor(
             lastItem is ChatItem.UserRequest -> return
             lastItem is ChatItem.GeminiResponse && lastItem.response is Resource.Loading -> return
         }
+
         geminiJob?.cancel()
 
         _chatState.value += ChatItem.UserRequest(request)
@@ -67,19 +67,29 @@ class GeminiViewModel @Inject constructor(
                         chatHistory += content(role = "model") {
                             text(result.data?.response ?: "Error getting Gemini response")
                         }
-
-                        println(result.data?.response)
-                        chatHistory.map { println((it.parts.first() as TextPart).text) }
-                    }
-
-                    if (result is Resource.Error) {
-                        chatHistory.removeLast()
                     }
                 }
                 .launchIn(viewModelScope)
 
         }
+    }
 
+    fun completeGeminiAnimationState(index: Int) {
+        val item = _chatState.value[index]
+
+        if (item is ChatItem.GeminiResponse) {
+            when (item.response) {
+                is Resource.Success -> {
+                    item.response.data?.let { data ->
+                        _chatState.value = _chatState.value.toMutableList().apply {
+                            set(index, ChatItem.GeminiResponse(Resource.Success(data.copy(hasAnimated = true))))
+                        }
+                    }
+                }
+                else -> Unit
+            }
+
+        }
     }
 
 }

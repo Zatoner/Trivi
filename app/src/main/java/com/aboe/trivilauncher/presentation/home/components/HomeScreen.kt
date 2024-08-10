@@ -1,14 +1,10 @@
 package com.aboe.trivilauncher.presentation.home.components
 
-import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
-import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -34,7 +30,6 @@ import com.aboe.trivilauncher.presentation.home.HomeUIEvent
 import com.aboe.trivilauncher.presentation.home.HomeViewModel
 import kotlinx.coroutines.flow.collectLatest
 
-@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun HomeScreen(
     snackbarHostState : SnackbarHostState,
@@ -85,7 +80,8 @@ fun HomeScreen(
                 Spacer(modifier = Modifier.height(36.dp))
 
                 Row {
-                    
+
+                    // maybe make it into single a composable
                     if (dateState.isNotEmpty()) {
                         Text(text = dateState)
                     }
@@ -114,36 +110,15 @@ fun HomeScreen(
 
                 when (geminiState) {
                     is Resource.Success -> geminiState.data?.let { data ->
-                        
-                        TypingText(
-                            modifier = Modifier.fillMaxWidth(),
-                            text = data.response,
-                            animate = !data.hasAnimated,
-                            animationCallback = {
+                        GeminiResponseContent(
+                            data = data,
+                            textAnimationCallback = {
                                 viewModel.completeGeminiAnimationState()
+                            },
+                            onAppClick = { packageName ->
+                                viewModel.launchApp(packageName)
                             }
                         )
-
-                        Spacer(modifier = Modifier.height(8.dp))
-
-                        if (data.hasAnimated) {
-                            FlowRow (
-                                modifier = Modifier.fillMaxWidth().animateContentSize(),
-                                horizontalArrangement = Arrangement.spacedBy(4.dp),
-                                verticalArrangement = Arrangement.spacedBy(4.dp)
-                            ){
-                                data.apps.forEachIndexed { index, app ->
-                                    AppPill(
-                                        appInfo = app,
-                                        animate = true,
-                                        delay = index * 300,
-                                        onClick = {
-                                            viewModel.launchApp(app.packageName)
-                                        }
-                                    )
-                                }
-                            }
-                        }
                     }
 
                     is Resource.Loading -> Text(text = "Generating...") //make shimmer instead
