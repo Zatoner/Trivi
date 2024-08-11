@@ -30,6 +30,7 @@
         tools:targetApi="34">
         <activity
             android:name=".presentation.MainActivity"
+            android:windowSoftInputMode="adjustResize"
             android:exported="true"
             android:theme="@style/Theme.TriviLauncher">
             <intent-filter>
@@ -49,6 +50,9 @@
                 <action android:name="android.service.notification.NotificationListenerService" />
             </intent-filter>
         </service>
+        <meta-data
+            android:name="preloaded_fonts"
+            android:resource="@array/preloaded_fonts" />
 
     </application>
 

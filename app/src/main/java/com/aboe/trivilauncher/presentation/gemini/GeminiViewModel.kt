@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.aboe.trivilauncher.common.Resource
 import com.aboe.trivilauncher.domain.use_case.get_gemini_prompt.GetGeminiPromptUseCase
 import com.aboe.trivilauncher.domain.use_case.get_gemini_response.GetGeminiResponseUseCase
+import com.aboe.trivilauncher.domain.use_case.launch_app.LaunchAppUseCase
 import com.aboe.trivilauncher.presentation.apps.ChatItem
 import com.google.ai.client.generativeai.type.Content
 import com.google.ai.client.generativeai.type.content
@@ -21,7 +22,8 @@ import javax.inject.Inject
 @HiltViewModel
 class GeminiViewModel @Inject constructor(
     private val getGeminiPrompt: GetGeminiPromptUseCase,
-    private val getGeminiResponse: GetGeminiResponseUseCase
+    private val getGeminiResponse: GetGeminiResponseUseCase,
+    private val launchAppIntent: LaunchAppUseCase
 ) : ViewModel() {
 
     private var geminiJob: Job? = null
@@ -77,18 +79,22 @@ class GeminiViewModel @Inject constructor(
     fun completeGeminiAnimationState(index: Int) {
         val item = _chatState.value[index]
 
-        if (item is ChatItem.GeminiResponse) {
-            when (item.response) {
-                is Resource.Success -> {
-                    item.response.data?.let { data ->
-                        _chatState.value = _chatState.value.toMutableList().apply {
-                            set(index, ChatItem.GeminiResponse(Resource.Success(data.copy(hasAnimated = true))))
-                        }
-                    }
+        if (item is ChatItem.GeminiResponse && item.response is Resource.Success) {
+            item.response.data?.let { data->
+                _chatState.value = _chatState.value.toMutableList().also { list ->
+                    list[index] = item.copy(response = Resource.Success(data.copy(hasAnimated = true)))
                 }
-                else -> Unit
             }
+        }
+    }
 
+    fun launchApp(packageName: String) {
+        if (!launchAppIntent(packageName)) {
+            println("couldn't launch app")
+//            viewModelScope.launch {
+//                _eventFlow.emit(HomeUIEvent.ShowSnackbar("Couldn't launch app"))
+//            }
+//            need to show snackbar
         }
     }
 

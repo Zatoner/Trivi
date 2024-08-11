@@ -1,13 +1,16 @@
 package com.aboe.trivilauncher.presentation.home.components
 
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
@@ -16,6 +19,7 @@ import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -79,11 +83,14 @@ fun HomeScreen(
             item {
                 Spacer(modifier = Modifier.height(36.dp))
 
-                Row {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
 
                     // maybe make it into single a composable
                     if (dateState.isNotEmpty()) {
-                        Text(text = dateState)
+                        Text(text = dateState, style = MaterialTheme.typography.titleLarge)
                     }
 
                     VerticalDivider(
@@ -99,8 +106,8 @@ fun HomeScreen(
                             WeatherWidget(weatherItem = data)
                         }
 
-                        is Resource.Loading -> Text(text = "...")
-                        is Resource.Error -> Text(text = weatherState.message ?: "Error")
+                        is Resource.Loading -> Text(text = "...", style = MaterialTheme.typography.titleLarge)
+                        is Resource.Error -> Text(text = weatherState.message ?: "Error", style = MaterialTheme.typography.titleLarge)
                     }
                 }
             }
@@ -108,9 +115,13 @@ fun HomeScreen(
                 PillLabel(text = "Spotlight", icon = ImageVector.vectorResource(id = R.drawable.outline_spotlight_48))
                 Spacer(modifier = Modifier.height(8.dp))
 
+                // make into one composable
                 when (geminiState) {
                     is Resource.Success -> geminiState.data?.let { data ->
                         GeminiResponseContent(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .animateContentSize(),
                             data = data,
                             textAnimationCallback = {
                                 viewModel.completeGeminiAnimationState()
@@ -121,16 +132,16 @@ fun HomeScreen(
                         )
                     }
 
-                    is Resource.Loading -> Text(text = "Generating...") //make shimmer instead
-                    is Resource.Error -> Text(text = geminiState.message ?: "Error")
+                    is Resource.Loading -> Text(text = "Generating...", style = MaterialTheme.typography.bodyLarge) //make shimmer instead
+                    is Resource.Error -> Text(text = geminiState.message ?: "Error", style = MaterialTheme.typography.bodyLarge)
                 }
             }
-            item {
-                Spacer(modifier = Modifier.height(16.dp))
-                PillLabel(text = "Debug", icon = ImageVector.vectorResource(id = R.drawable.outline_question_mark_48))
-                RequestNotificationPermissionScreen()
-                RequestUsageStatsPermissionScreen()
-            }
+//            item {
+//                Spacer(modifier = Modifier.height(16.dp))
+//                PillLabel(text = "Debug", icon = ImageVector.vectorResource(id = R.drawable.outline_question_mark_48))
+//                RequestNotificationPermissionScreen()
+//                RequestUsageStatsPermissionScreen()
+//            }
         }
     }
 }

@@ -12,6 +12,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.aboe.trivilauncher.R
@@ -24,6 +26,18 @@ fun BottomBar(
     screenState: ScreenState,
     onDoneAction: (String) -> Unit
 ) {
+    var text by remember { mutableStateOf("") }
+
+    val keyboardController = LocalSoftwareKeyboardController.current
+    val focusManager = LocalFocusManager.current
+
+    fun submitGeminiRequest() {
+        onDoneAction(text)
+        text = ""
+        keyboardController?.hide()
+        focusManager.clearFocus()
+    }
+
     Row(
         Modifier
             .fillMaxSize()
@@ -31,7 +45,6 @@ fun BottomBar(
         horizontalArrangement = Arrangement.spacedBy(12.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        var text by remember { mutableStateOf("") }
 
         // use AnimatedVisibility
         when (screenState) {
@@ -50,8 +63,7 @@ fun BottomBar(
                     },
                     onDoneAction = {
                         if (text.isNotEmpty()) {
-                            onDoneAction(text)
-                            text = ""
+                            submitGeminiRequest()
                             navController.navigate(targetDestination)
                         }
                     }
@@ -63,8 +75,7 @@ fun BottomBar(
                     iconId = if (text.isNotEmpty()) R.drawable.outline_question_mark_48 else R.drawable.outline_spotlight_48,
                     onClick = {
                         if (text.isNotEmpty()) {
-                            onDoneAction(text)
-                            text = ""
+                            submitGeminiRequest()
                         }
                         navController.navigate(targetDestination)
                     }
@@ -119,8 +130,7 @@ fun BottomBar(
                     },
                     onDoneAction = {
                         if (text.isNotEmpty()) {
-                            onDoneAction(text)
-                            text = ""
+                            submitGeminiRequest()
                         }
                     }
                 )
@@ -131,8 +141,7 @@ fun BottomBar(
                     iconId = if (text.isNotEmpty()) R.drawable.outline_question_mark_48 else R.drawable.outline_spotlight_48,
                     onClick = {
                         if (text.isNotEmpty()) {
-                            onDoneAction(text)
-                            text = ""
+                            submitGeminiRequest()
                         } else {
                             navController.popBackStack(Path.HomeScreen, false)
                         }

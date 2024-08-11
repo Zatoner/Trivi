@@ -9,18 +9,16 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.aboe.trivilauncher.R
 import com.aboe.trivilauncher.ui.theme.TriviLauncherTheme
 
@@ -34,15 +32,15 @@ fun PillLabel(
     Box(
         modifier = modifier
             .clip(RoundedCornerShape(50))
-            .background(Color.Black.copy(alpha = .05f))
+            .background(MaterialTheme.colorScheme.primary)
             .padding(8.dp)
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            Icon(imageVector = icon, contentDescription = "Icon", modifier.size(16.dp))
+            Icon(imageVector = icon, contentDescription = "Icon", modifier.size(20.dp))
             Spacer(modifier = Modifier.width(4.dp))
-            Text(text = text, style = TextStyle(fontSize = 10.sp))
+            Text(text = text, style = MaterialTheme.typography.labelSmall)
             Spacer(modifier = Modifier.width(4.dp))
         }
     }

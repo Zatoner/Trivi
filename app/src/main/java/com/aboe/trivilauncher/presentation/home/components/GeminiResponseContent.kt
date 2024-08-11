@@ -1,6 +1,5 @@
 package com.aboe.trivilauncher.presentation.home.components
 
-import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
@@ -32,13 +31,12 @@ fun GeminiResponseContent(
             }
         )
 
-        Spacer(modifier = Modifier.height(8.dp))
+        if (data.hasAnimated && data.apps.isNotEmpty()) {
+            Spacer(modifier = Modifier.height(8.dp))
 
-        if (data.hasAnimated) {
             FlowRow (
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .animateContentSize(),
+                    .fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(4.dp),
                 verticalArrangement = Arrangement.spacedBy(4.dp)
             ){
@@ -46,7 +44,7 @@ fun GeminiResponseContent(
                     AppPill(
                         appInfo = app,
                         animate = true,
-                        delay = index * 300,
+                        delay = index * 250,
                         onClick = {
                             onAppClick(app.packageName)
                         }

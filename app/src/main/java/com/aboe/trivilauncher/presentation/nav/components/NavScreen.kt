@@ -1,11 +1,20 @@
 package com.aboe.trivilauncher.presentation.nav.components
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.ime
+import androidx.compose.foundation.layout.isImeVisible
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.BottomAppBar
@@ -31,6 +40,7 @@ import com.aboe.trivilauncher.presentation.nav.NavViewModel
 import com.aboe.trivilauncher.presentation.nav.Path
 import com.aboe.trivilauncher.presentation.nav.ScreenState
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun NavScreen(
     viewModel: NavViewModel = hiltViewModel()
@@ -43,24 +53,37 @@ fun NavScreen(
     }
 
     Scaffold(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier
+            .fillMaxSize(),
+        containerColor = MaterialTheme.colorScheme.background,
         snackbarHost = {
             SnackbarHost(hostState = snackbarHostState)
         },
         bottomBar = {
-            BottomAppBar(
-                modifier = Modifier
-                    .height(116.dp)
-                    .clip(RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp)),
-                containerColor = MaterialTheme.colorScheme.secondary
-            ) {
-                BottomBar(
-                    navController = navController,
-                    screenState = viewModel.screenState.value,
-                    onDoneAction = { text ->
-                        viewModel.setGeminiText(text)
-                    }
-                )
+            Column {
+                BottomAppBar(
+                    modifier = Modifier
+                        .height(116.dp)
+                        .clip(RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp)),
+                    containerColor = MaterialTheme.colorScheme.primary
+                ) {
+                    BottomBar(
+                        navController = navController,
+                        screenState = viewModel.screenState.value,
+                        onDoneAction = { text ->
+                            viewModel.setGeminiText(text)
+                        }
+                    )
+                }
+
+                AnimatedVisibility(
+                    visible = WindowInsets.isImeVisible,
+                    enter = slideInVertically(animationSpec = tween(300)) { height -> height },
+                    exit = slideOutVertically(animationSpec = tween(300)) { height -> height }
+                ) {
+                    Spacer(modifier =
+                    Modifier.height(WindowInsets.ime.asPaddingValues().calculateBottomPadding() - 24.dp))
+                }
             }
         }
     ) { innerPadding ->

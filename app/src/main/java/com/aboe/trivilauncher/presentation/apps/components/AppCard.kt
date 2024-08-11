@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -24,9 +25,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.core.graphics.drawable.toBitmap
@@ -51,6 +50,7 @@ fun AppCard(
     }
 
     Box(
+        // move to child box
         modifier = modifier.alpha(animatedVisibility.value)
     ) {
         Box(
@@ -58,7 +58,7 @@ fun AppCard(
                 .fillMaxWidth()
                 .aspectRatio(1f)
                 .clip(RoundedCornerShape(12.dp))
-                .background(Color.Black.copy(alpha = .05f))
+                .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.5f))
                 .clickable { onClick() }
         ) {
             Column(
@@ -71,12 +71,10 @@ fun AppCard(
                 Image(
                     bitmap = appInfo.icon.toBitmap().asImageBitmap(),
                     contentDescription = appInfo.label,
-                    modifier = Modifier.size(64.dp)
+                    modifier = Modifier.size(80.dp)
                 )
                 Spacer(modifier = Modifier.height(24.dp))
-                Text(text = appInfo.label,
-                    style = TextStyle(textAlign = TextAlign.Center)
-                )
+                Text(text = appInfo.label, style = MaterialTheme.typography.labelLarge, textAlign = TextAlign.Center)
             }
         }
     }
