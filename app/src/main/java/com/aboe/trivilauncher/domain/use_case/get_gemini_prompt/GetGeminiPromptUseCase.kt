@@ -32,10 +32,12 @@ class GetGeminiPromptUseCase @Inject constructor(
 
     // maybe use an object for this
     suspend operator fun invoke(prompt: String? = null, addContext: Boolean = true) : Pair<String, List<Content>> {
-        val userName = "Not implemented"
-        val userInfo = "Not implemented"
+
+        val personalitySetting = getSharedPrefs(context, "personalitySetting", "None")
 
         val currentTime = SimpleDateFormat("HH:mm:ss, dd/MM/yyyy", Locale.getDefault()).format(Date())
+        val userName = getSharedPrefs(context, "username", "Unknown")
+        val userInfo = getSharedPrefs(context, "userInfo", "Unknown")
 
         val (notifications, userLocation, installedApps) = coroutineScope {
             val notificationsDeferred = async { getNotifications() }
@@ -61,8 +63,8 @@ class GetGeminiPromptUseCase @Inject constructor(
         val systemContext = buildString {
             appendLine("--------------------------------------------------")
             appendLine("SYSTEM PROMPT: ${Constants.SYSTEM_PROMPT}")
-//            appendLine("")
-//            appendLine("PERSONALITY SETTING: behave like X")
+            appendLine("")
+            appendLine("PERSONALITY SETTING: ${personalitySetting.ifEmpty { "None" }}")
             appendLine("--------------------------------------------------")
             appendLine("PROMPT CONTEXT:")
             // last request
@@ -97,6 +99,7 @@ class GetGeminiPromptUseCase @Inject constructor(
 //            appendLine("")
             appendLine("--------------------------------------------------")
         }
+        println(systemContext)
 
         val history = if (addContext) listOf(content(role = "model") { text(systemContext) }) else emptyList()
         val promptString = prompt ?: Constants.DEFAULT_PROMPT
@@ -117,8 +120,9 @@ class GetGeminiPromptUseCase @Inject constructor(
             UsageStatsManager.INTERVAL_DAILY,
             startTime,
             endTime
-        ).
-        groupBy { usage ->
+        )
+            .filter { it.totalTimeInForeground > 0 }
+            .groupBy { usage ->
                 try {
                     getApp(usage.packageName, StringType.APP_PACKAGE_NAME)?.label
                 } catch (e: PackageManager.NameNotFoundException) {
@@ -155,5 +159,12 @@ class GetGeminiPromptUseCase @Inject constructor(
             Log.e(TAG, "Error getting user address ${e.message}", e)
             "Unknown"
         }
+    }
+
+    // move to UseCase
+    // TEMPORARY
+    private fun getSharedPrefs(context: Context, key: String, defaultValue: String): String {
+        val sharedPrefs = context.getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
+        return sharedPrefs.getString(key, defaultValue) ?: defaultValue
     }
 }

@@ -51,13 +51,15 @@ fun AppPill(
         if (animate) {
             delay(delay.toLong())
             visible = true
+        } else {
+            visible = true
         }
     }
 
     AnimatedVisibility(
         visible = visible,
-        enter = fadeIn(animationSpec = tween(durationMillis = 600)),
-        exit = fadeOut(animationSpec = tween(durationMillis = 600))
+        enter = fadeIn(animationSpec = tween(durationMillis = if (animate) 600 else 100)),
+        exit = fadeOut(animationSpec = tween(durationMillis = if (animate) 600 else 100))
     ) {
         Box(
             modifier = modifier

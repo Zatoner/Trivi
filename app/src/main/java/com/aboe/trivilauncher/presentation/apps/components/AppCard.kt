@@ -2,9 +2,10 @@ package com.aboe.trivilauncher.presentation.apps.components
 
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -31,11 +32,13 @@ import androidx.compose.ui.unit.dp
 import androidx.core.graphics.drawable.toBitmap
 import com.aboe.trivilauncher.domain.model.CompactAppInfo
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun AppCard(
     modifier: Modifier = Modifier,
     appInfo: CompactAppInfo,
-    onClick: () -> Unit,
+    onClick: () -> Unit = {},
+    onLongClick: () -> Unit = {},
     animate: Boolean = false
 ) {
     val animatedVisibility = remember { Animatable(initialValue = 0f) }
@@ -59,7 +62,8 @@ fun AppCard(
                 .aspectRatio(1f)
                 .clip(RoundedCornerShape(12.dp))
                 .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.5f))
-                .clickable { onClick() }
+                .combinedClickable(onClick = onClick, onLongClick = onLongClick)
+
         ) {
             Column(
                 modifier = Modifier

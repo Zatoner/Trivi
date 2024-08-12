@@ -4,6 +4,7 @@ import com.aboe.trivilauncher.domain.model.CompactAppInfo
 import com.aboe.trivilauncher.domain.repository.AppRepository
 import javax.inject.Inject
 
+// move this somewhere else
 enum class StringType {
     APP_NAME,
     APP_PACKAGE_NAME,

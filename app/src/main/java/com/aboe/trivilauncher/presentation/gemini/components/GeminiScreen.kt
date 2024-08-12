@@ -5,7 +5,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -22,7 +21,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontStyle
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.aboe.trivilauncher.common.Resource
@@ -76,7 +74,7 @@ fun GeminiScreen(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .clip(RoundedCornerShape(16.dp))
-                                .background(MaterialTheme.colorScheme.primary)
+                                .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.5f))
                                 .padding(16.dp)
                         ) {
                             val response = item.response
@@ -109,27 +107,22 @@ fun GeminiScreen(
                         }
                     }
 
-                    is ChatItem.UserRequest -> Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.End
-                    ) {
-                        Box(
-                            modifier = Modifier
-                                .border(
-                                    width = 1.dp,
-                                    color = Color.Black.copy(alpha = 0.1f),
-                                    shape = RoundedCornerShape(16.dp)
-                                )
-                                .padding(16.dp)
-
-                        ) {
-                            Text(
-                                modifier = Modifier,
-                                text = item.request,
-                                style = MaterialTheme.typography.bodyLarge.copy(fontStyle = FontStyle.Italic),
-                                textAlign = TextAlign.End
+                    is ChatItem.UserRequest -> Box(
+                        modifier = Modifier
+                            .border(
+                                width = 1.dp,
+                                color = Color.Black.copy(alpha = 0.1f),
+                                shape = RoundedCornerShape(16.dp)
                             )
-                        }
+                            .fillMaxWidth()
+                            .padding(16.dp)
+
+                    ) {
+                        Text(
+                            modifier = Modifier,
+                            text = item.request,
+                            style = MaterialTheme.typography.bodyLarge.copy(fontStyle = FontStyle.Italic),
+                        )
                     }
                 }
             }

@@ -2,13 +2,17 @@ package com.aboe.trivilauncher.presentation.nav.components
 
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun InputTextField(
     modifier: Modifier,
@@ -25,6 +29,10 @@ fun InputTextField(
         },
         shape = RoundedCornerShape(50),
         singleLine = true,
+        colors = TextFieldDefaults.outlinedTextFieldColors(
+            focusedBorderColor = Color.Black.copy(alpha = 0.4f),
+            unfocusedBorderColor = Color.Black.copy(alpha = 0.4f),
+        ),
         textStyle = TextStyle(textAlign = TextAlign.Start),
         onValueChange = { input ->
             onValueChange(input)

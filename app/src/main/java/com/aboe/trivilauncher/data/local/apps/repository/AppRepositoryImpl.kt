@@ -52,13 +52,19 @@ class AppRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getAppByPackageName(packageName: String): CompactAppInfo? {
-        return cachedApps?.get(packageName) ?: getInstalledApps().find { it.packageName == packageName }
+        cachedApps?.let { apps ->
+            return apps[packageName]
+        }
+
+        return getInstalledApps().find { it.packageName == packageName }
     }
 
     override suspend fun getAppByLabel(label: String): CompactAppInfo? {
-        return appNameToPackageNameMap?.get(label)?.let { packageName ->
-            cachedApps?.get(packageName) ?: getInstalledApps().find { it.label == label }
+        cachedApps?.let { apps ->
+            return apps.values.find { it.label == label }
         }
+
+        return getInstalledApps().find { it.label == label }
     }
 
     fun invalidateCache() {

@@ -1,5 +1,7 @@
 package com.aboe.trivilauncher.presentation.nav.components
 
+import android.content.Context
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -12,6 +14,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.unit.dp
@@ -72,7 +75,7 @@ fun BottomBar(
                 CircleButton(
                     modifier = Modifier
                         .fillMaxHeight(),
-                    iconId = if (text.isNotEmpty()) R.drawable.outline_question_mark_48 else R.drawable.outline_spotlight_48,
+                    iconId = if (text.isNotEmpty()) R.drawable.rounded_arrow_forward_48 else R.drawable.rounded_apps_48,
                     onClick = {
                         if (text.isNotEmpty()) {
                             submitGeminiRequest()
@@ -83,13 +86,24 @@ fun BottomBar(
             }
 
             ScreenState.APPS -> {
+                // TEMPORARY APPROACH
+                val context = LocalContext.current
+                val sharedPrefs = context.getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
 
                 CircleButton(
                     modifier = Modifier
                         .fillMaxHeight(),
-                    iconId = R.drawable.outline_question_mark_48,
+                    iconId = R.drawable.rounded_settings_48,
                     onClick = {
-                        //settings
+                        sharedPrefs.edit().putBoolean("onboarding_completed", false).apply()
+
+                        Toast.makeText(
+                            context,
+                            "Please restart the app to complete onboarding",
+                            Toast.LENGTH_LONG
+                        ).show()
+
+                        navController.popBackStack(Path.HomeScreen, false)
                     }
                 )
 
@@ -98,7 +112,7 @@ fun BottomBar(
                         .weight(1f)
                         .fillMaxHeight(),
                     text = "",
-                    placeholder = "Search Apps..",
+                    placeholder = "Search Apps...",
                     onValueChange = {
                         //search
                     },
@@ -110,7 +124,7 @@ fun BottomBar(
                 CircleButton(
                     modifier = Modifier
                         .fillMaxHeight(),
-                    iconId = R.drawable.outline_question_mark_48,
+                    iconId = R.drawable.rounded_arrow_downward_48,
                     onClick = {
                         navController.popBackStack(Path.HomeScreen, false)
                     }
@@ -138,7 +152,7 @@ fun BottomBar(
                 CircleButton(
                     modifier = Modifier
                         .fillMaxHeight(),
-                    iconId = if (text.isNotEmpty()) R.drawable.outline_question_mark_48 else R.drawable.outline_spotlight_48,
+                    iconId = if (text.isNotEmpty()) R.drawable.rounded_arrow_forward_48 else R.drawable.rounded_arrow_downward_48,
                     onClick = {
                         if (text.isNotEmpty()) {
                             submitGeminiRequest()

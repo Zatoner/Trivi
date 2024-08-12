@@ -5,8 +5,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.aboe.trivilauncher.common.Resource
+import com.aboe.trivilauncher.domain.model.CompactAppInfo
 import com.aboe.trivilauncher.domain.model.GeminiItem
 import com.aboe.trivilauncher.domain.model.WeatherWidgetItem
+import com.aboe.trivilauncher.domain.use_case.get_app.GetAppUseCase
+import com.aboe.trivilauncher.domain.use_case.get_app.StringType
 import com.aboe.trivilauncher.domain.use_case.get_formatted_date.GetFormattedDateUseCase
 import com.aboe.trivilauncher.domain.use_case.get_gemini_prompt.GetGeminiPromptUseCase
 import com.aboe.trivilauncher.domain.use_case.get_gemini_response.GetGeminiResponseUseCase
@@ -27,7 +30,8 @@ class HomeViewModel @Inject constructor(
     private val getGeminiPrompt: GetGeminiPromptUseCase,
     private val getGeminiResponse: GetGeminiResponseUseCase,
     private val getFormattedDate: GetFormattedDateUseCase,
-    private val launchAppIntent: LaunchAppUseCase
+    private val launchAppIntent: LaunchAppUseCase,
+    private val getApp: GetAppUseCase
 ) : ViewModel() {
 
     private var lastUpdate: Long = 0
@@ -89,6 +93,10 @@ class HomeViewModel @Inject constructor(
         }
     }
 
+    suspend fun getAppByPackageName(packageName: String) : CompactAppInfo? {
+        return getApp(packageName, StringType.APP_PACKAGE_NAME)
+    }
+
     private suspend fun updateGeminiResponse() {
         geminiJob?.cancel()
         _geminiState.value = Resource.Loading()
@@ -127,7 +135,7 @@ class HomeViewModel @Inject constructor(
                             _eventFlow.emit(HomeUIEvent.ShowSnackbar(message))
                         }
 
-                       Resource.Error("No weather data")
+                       Resource.Error("No WX")
                     }
                 }
             }.launchIn(viewModelScope)

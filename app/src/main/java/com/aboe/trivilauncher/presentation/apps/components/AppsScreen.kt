@@ -1,5 +1,7 @@
 package com.aboe.trivilauncher.presentation.apps.components
 
+import android.content.Context
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -9,6 +11,7 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.aboe.trivilauncher.presentation.apps.AppsViewModel
@@ -18,6 +21,9 @@ fun AppsScreen(
     viewModel: AppsViewModel = hiltViewModel()
 ) {
     val appsState by viewModel.appsState
+    // TEMPORARY APPROACH
+    val context = LocalContext.current
+    val sharedPreferences = context.getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
 
     Box(modifier = Modifier
         .padding(horizontal = 16.dp)
@@ -38,6 +44,22 @@ fun AppsScreen(
                     animate = true,
                     onClick = {
                         viewModel.launchApp(appsState[index].packageName)
+                    },
+                    onLongClick = {
+                        // TEMPORARY APPROACH
+                        // this logic should be in a usecase
+                        val editor = sharedPreferences.edit()
+                        val currentFavorites = sharedPreferences.getStringSet("favorites", emptySet()) ?: emptySet()
+                        val newFavorites = if (currentFavorites.contains(appsState[index].packageName)) {
+                            Toast.makeText(context, "Removed ${appsState[index].label} from favorites", Toast.LENGTH_SHORT).show()
+                            currentFavorites - appsState[index].packageName
+                        } else {
+                            Toast.makeText(context, "Added ${appsState[index].label} to favorites", Toast.LENGTH_SHORT).show()
+                            currentFavorites + appsState[index].packageName
+                        }
+
+                        editor.putStringSet("favorites", newFavorites)
+                        editor.apply()
                     }
                 )
             }

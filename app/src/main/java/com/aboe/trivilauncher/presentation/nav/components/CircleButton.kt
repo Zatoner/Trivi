@@ -5,10 +5,12 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
@@ -23,7 +25,12 @@ fun CircleButton(
         modifier = modifier
             .aspectRatio(1f),
         shape = CircleShape,
-        colors = ButtonDefaults.buttonColors(),
+        colors = ButtonColors(
+            containerColor = MaterialTheme.colorScheme.secondary,
+            contentColor = Color.Black,
+            disabledContainerColor = Color.Gray,
+            disabledContentColor = Color.Black
+        ),
         contentPadding = PaddingValues(12.dp),
         onClick = {
             onClick()

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <array name="preloaded_fonts" translatable="false">
-        <item>@font/noto_serif</item>
+        <item>@font/noto_serif_medium</item>
         <item>@font/noto_serif_bold</item>
         <item>@font/noto_serif_bold_italic</item>
         <item>@font/noto_serif_extrabold</item>

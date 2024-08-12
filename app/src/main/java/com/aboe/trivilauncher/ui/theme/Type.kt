@@ -11,7 +11,7 @@ import com.aboe.trivilauncher.R
 
 val notoSerifFamily = FontFamily(
     Font(R.font.noto_serif_light, FontWeight.Light),
-    Font(R.font.noto_serif, FontWeight.Normal),
+    Font(R.font.noto_serif_regular, FontWeight.Normal),
     Font(R.font.noto_serif_medium, FontWeight.Medium),
     Font(R.font.noto_serif_semibold, FontWeight.SemiBold),
     Font(R.font.noto_serif_bold, FontWeight.Bold),

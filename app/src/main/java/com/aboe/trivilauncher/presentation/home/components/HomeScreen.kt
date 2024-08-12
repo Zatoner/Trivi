@@ -1,8 +1,11 @@
 package com.aboe.trivilauncher.presentation.home.components
 
+import android.content.Context
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -19,10 +22,14 @@ import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -30,10 +37,14 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import com.aboe.trivilauncher.R
 import com.aboe.trivilauncher.common.Resource
+import com.aboe.trivilauncher.domain.model.CompactAppInfo
 import com.aboe.trivilauncher.presentation.home.HomeUIEvent
 import com.aboe.trivilauncher.presentation.home.HomeViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.withContext
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun HomeScreen(
     snackbarHostState : SnackbarHostState,
@@ -112,7 +123,7 @@ fun HomeScreen(
                 }
             }
             item {
-                PillLabel(text = "Spotlight", icon = ImageVector.vectorResource(id = R.drawable.outline_spotlight_48))
+                PillLabel(text = "Spotlight", icon = ImageVector.vectorResource(id = R.drawable.sparkle_icon))
                 Spacer(modifier = Modifier.height(8.dp))
 
                 // make into one composable
@@ -136,12 +147,46 @@ fun HomeScreen(
                     is Resource.Error -> Text(text = geminiState.message ?: "Error", style = MaterialTheme.typography.bodyLarge)
                 }
             }
-//            item {
-//                Spacer(modifier = Modifier.height(16.dp))
-//                PillLabel(text = "Debug", icon = ImageVector.vectorResource(id = R.drawable.outline_question_mark_48))
-//                RequestNotificationPermissionScreen()
-//                RequestUsageStatsPermissionScreen()
-//            }
+            item {
+                // TEMPORARY APPROACH, was short on time
+                var favorites by remember { mutableStateOf<List<CompactAppInfo>>(emptyList()) }
+
+                val context = LocalContext.current
+                val sharedPrefs = context.getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
+                val favoritesSet = sharedPrefs.getStringSet("favorites", emptySet()) ?: emptySet()
+
+                LaunchedEffect(Unit) {
+                    withContext(Dispatchers.IO) {
+                        favorites = favoritesSet.toList().mapNotNull { packageName ->
+                            viewModel.getAppByPackageName(packageName)
+                        }
+                    }
+                }
+
+                PillLabel(text = "Favourites", icon = ImageVector.vectorResource(id = R.drawable.outline_favorite_48))
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                if (favorites.isEmpty()) {
+                    Text(text = "No favorites, Long press on an app to add it", style = MaterialTheme.typography.bodyLarge)
+                } else {
+                    FlowRow (
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(4.dp),
+                        verticalArrangement = Arrangement.spacedBy(4.dp)
+                    ){
+                        favorites.forEach { app ->
+                            AppPill(
+                                appInfo = app,
+                                onClick = {
+                                    viewModel.launchApp(app.packageName)
+                                }
+                            )
+                        }
+                    }
+                }
+            }
         }
     }
 }
