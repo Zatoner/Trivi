@@ -159,7 +159,7 @@ fun HomeScreen(
                     withContext(Dispatchers.IO) {
                         favorites = favoritesSet.toList().mapNotNull { packageName ->
                             viewModel.getAppByPackageName(packageName)
-                        }
+                        }.sortedBy { it.label.lowercase() }
                     }
                 }
 

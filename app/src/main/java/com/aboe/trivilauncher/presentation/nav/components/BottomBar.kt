@@ -5,7 +5,6 @@ import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -25,6 +24,7 @@ import com.aboe.trivilauncher.presentation.nav.ScreenState
 
 @Composable
 fun BottomBar(
+    modifier: Modifier = Modifier,
     navController: NavHostController,
     screenState: ScreenState,
     onDoneAction: (String) -> Unit
@@ -42,9 +42,7 @@ fun BottomBar(
     }
 
     Row(
-        Modifier
-            .fillMaxSize()
-            .padding(14.dp),
+        modifier.padding(14.dp),
         horizontalArrangement = Arrangement.spacedBy(12.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {

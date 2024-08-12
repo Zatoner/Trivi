@@ -36,8 +36,8 @@ class GetGeminiPromptUseCase @Inject constructor(
         val personalitySetting = getSharedPrefs(context, "personalitySetting", "None")
 
         val currentTime = SimpleDateFormat("HH:mm:ss, dd/MM/yyyy", Locale.getDefault()).format(Date())
-        val userName = getSharedPrefs(context, "username", "Unknown")
-        val userInfo = getSharedPrefs(context, "userInfo", "Unknown")
+        val userName = getSharedPrefs(context, "username", "Unknown").ifEmpty { "Unknown" }
+        val userInfo = getSharedPrefs(context, "userInfo", "Unknown").ifEmpty { "None" }
 
         val (notifications, userLocation, installedApps) = coroutineScope {
             val notificationsDeferred = async { getNotifications() }

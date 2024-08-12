@@ -25,7 +25,7 @@ class GetUserLocationUseCase @Inject constructor(
         val coarseLocationPerm = (ContextCompat
             .checkSelfPermission(context, android.Manifest.permission.ACCESS_COARSE_LOCATION))
 
-        if (fineLocationPerm != PackageManager.PERMISSION_GRANTED ||
+        if (fineLocationPerm != PackageManager.PERMISSION_GRANTED &&
             coarseLocationPerm != PackageManager.PERMISSION_GRANTED) {
             Log.e(TAG, "Permission not granted")
             return null

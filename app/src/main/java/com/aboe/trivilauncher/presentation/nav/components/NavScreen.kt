@@ -68,6 +68,8 @@ fun NavScreen(
                     containerColor = MaterialTheme.colorScheme.primary
                 ) {
                     BottomBar(
+                        modifier = Modifier
+                            .fillMaxSize(),
                         navController = navController,
                         screenState = viewModel.screenState.value,
                         onDoneAction = { text ->

@@ -7,7 +7,6 @@ import javax.inject.Inject
 class LaunchAppUseCase @Inject constructor(
     @ApplicationContext private val context: Context,
 ) {
-
     operator fun invoke(appPackageName: String) : Boolean {
         val launchIntent = context.packageManager.getLaunchIntentForPackage(appPackageName)
         return if (launchIntent != null) {
