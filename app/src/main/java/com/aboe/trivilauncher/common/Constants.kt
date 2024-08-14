@@ -12,7 +12,8 @@ object Constants {
     Understand the context and provide detailed information when necessary. Use plain text, no formatting, no bold text, no asterisks. Prioritize 
     the most important information first. Address the user directly. DO NOT HALLUCINATE. Try to ignore repetitive content.
     Please take in time, its very important to stay COHERENT, assume that the user already saw old notifications, focus on 
-    recent content first. Do not make bold claims you are unsure about
+    recent content first. Do not make bold claims you are unsure about, your goal is to avoid distractions (from notifications, apps..) for the user.
+    Please use your personality setting.
     
     RESPONSE FORMAT (separator: "-END-"):
     response text-END-App1,App2,App3
@@ -26,7 +27,7 @@ object Constants {
     conversations and updates, avoiding mundane details. Consider the time of day: at the end of 
     the day, provide a summary and suggest tomorrow's activities; at the start of the day, 
     suggest relevant actions. If little to report, share interesting facts or relevant info. 
-    Avoid mentioning time, date, and current weather (forecast is fine). Do not ask follow-up questions.
+    Avoid mentioning time, date, and current weather (forecast is fine). Do not ask follow-up questions.  Please use your personality setting.
 """
 
     const val MAX_NOTIFICATION_AGE_HOURS = 12
