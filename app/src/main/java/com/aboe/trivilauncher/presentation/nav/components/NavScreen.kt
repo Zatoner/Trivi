@@ -2,8 +2,6 @@ package com.aboe.trivilauncher.presentation.nav.components
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
-import androidx.compose.animation.scaleIn
-import androidx.compose.animation.scaleOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.Column
@@ -78,6 +76,7 @@ fun NavScreen(
                     )
                 }
 
+                // use a better approach for soft keyboard
                 AnimatedVisibility(
                     visible = WindowInsets.isImeVisible,
                     enter = slideInVertically(animationSpec = tween(300)) { height -> height },
@@ -96,10 +95,10 @@ fun NavScreen(
         ) {
             composable<Path.AppsScreen>(
                 enterTransition = {
-                    slideInVertically { height -> height } + scaleIn()
+                    slideInVertically { height -> height }
                 },
                 exitTransition = {
-                    slideOutVertically { height -> height } + scaleOut()
+                    slideOutVertically { height -> height }
                 }
             ) {
                 AppsScreen()
@@ -107,10 +106,10 @@ fun NavScreen(
             }
             composable<Path.GeminiScreen>(
                 enterTransition = {
-                    slideInVertically { height -> height } + scaleIn()
+                    slideInVertically { height -> height }
                 },
                 exitTransition = {
-                    slideOutVertically { height -> height } + scaleOut()
+                    slideOutVertically { height -> height }
                 }
             ) {
                 GeminiScreen(inputText = viewModel.geminiText)

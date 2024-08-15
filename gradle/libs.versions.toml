@@ -1,6 +1,6 @@
 [versions]
 accompanistSystemuicontroller = "0.27.0"
-agp = "8.5.1"
+agp = "8.5.2"
 kotlin = "2.0.0"
 coreKtx = "1.13.1"
 junit = "4.13.2"
@@ -9,7 +9,7 @@ espressoCore = "3.6.1"
 lifecycleRuntimeKtx = "2.8.4"
 activityCompose = "1.9.1"
 composeBom = "2024.06.00"
-composeNavigation = "2.8.0-beta06"
+composeNavigation = "2.8.0-beta07"
 serialization = "1.6.3"
 
 # hilt

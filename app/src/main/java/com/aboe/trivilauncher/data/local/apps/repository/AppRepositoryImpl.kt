@@ -30,7 +30,9 @@ class AppRepositoryImpl @Inject constructor(
             it.activityInfo.packageName
         }.toSet()
 
+        // needs error handling
         val installedApps = packageManager.getInstalledApplications(PackageManager.GET_META_DATA)
+            .asSequence()
             .map { appInfo ->
                 val label = packageManager.getApplicationLabel(appInfo).toString()
                 val packageName = appInfo.packageName
