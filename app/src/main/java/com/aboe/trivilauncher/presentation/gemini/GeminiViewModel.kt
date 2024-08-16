@@ -52,13 +52,13 @@ class GeminiViewModel @Inject constructor(
         _chatState.value += ChatItem.GeminiResponse(Resource.Loading())
         val index = _chatState.value.lastIndex
 
-        viewModelScope.launch(Dispatchers.IO) {
+        geminiJob = viewModelScope.launch(Dispatchers.IO) {
             val (prompt, history) = getGeminiPrompt(request)
             if (chatHistory.isEmpty()) {
                 chatHistory += history
             }
 
-            geminiJob = getGeminiResponse(prompt, chatHistory)
+            getGeminiResponse(prompt, chatHistory)
                 .onEach { result ->
                     _chatState.value = _chatState.value.toMutableList().apply {
                         set(index, ChatItem.GeminiResponse(result))
@@ -70,8 +70,7 @@ class GeminiViewModel @Inject constructor(
                             text(result.data?.response ?: "Error getting Gemini response")
                         }
                     }
-                }
-                .launchIn(viewModelScope)
+                }.launchIn(this)
 
         }
     }

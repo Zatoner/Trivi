@@ -18,6 +18,7 @@ import com.aboe.trivilauncher.presentation.apps.AppsViewModel
 
 @Composable
 fun AppsScreen(
+    modifier: Modifier = Modifier,
     viewModel: AppsViewModel = hiltViewModel()
 ) {
     val appsState by viewModel.appsState
@@ -25,7 +26,7 @@ fun AppsScreen(
     val context = LocalContext.current
     val sharedPreferences = context.getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
 
-    Box(modifier = Modifier
+    Box(modifier = modifier
         .padding(horizontal = 16.dp)
         .fillMaxSize()) {
 

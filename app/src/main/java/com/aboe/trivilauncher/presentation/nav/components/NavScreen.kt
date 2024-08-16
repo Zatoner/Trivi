@@ -1,11 +1,14 @@
 package com.aboe.trivilauncher.presentation.nav.components
 
+import android.annotation.SuppressLint
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
@@ -13,7 +16,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.layout.isImeVisible
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.MaterialTheme
@@ -21,9 +26,14 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
@@ -31,6 +41,7 @@ import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.aboe.trivilauncher.data.remote.dto.weather.Wind
 import com.aboe.trivilauncher.presentation.apps.components.AppsScreen
 import com.aboe.trivilauncher.presentation.gemini.components.GeminiScreen
 import com.aboe.trivilauncher.presentation.home.components.HomeScreen
@@ -38,6 +49,7 @@ import com.aboe.trivilauncher.presentation.nav.NavViewModel
 import com.aboe.trivilauncher.presentation.nav.Path
 import com.aboe.trivilauncher.presentation.nav.ScreenState
 
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun NavScreen(
@@ -45,6 +57,9 @@ fun NavScreen(
 ) {
     val navController = rememberNavController()
     val snackbarHostState = remember { SnackbarHostState() }
+
+    val initialInnerPadding = WindowInsets.systemBars.asPaddingValues()
+    val bottomBarHeight = 94.dp + initialInnerPadding.calculateBottomPadding()
 
     LifecycleEventEffect(Lifecycle.Event.ON_PAUSE) {
         navController.popBackStack(Path.HomeScreen, false)
@@ -61,11 +76,11 @@ fun NavScreen(
             Column {
                 BottomAppBar(
                     modifier = Modifier
-                        .height(116.dp)
+                        .height(bottomBarHeight)
                         .clip(RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp)),
                     containerColor = MaterialTheme.colorScheme.primary
                 ) {
-                    BottomBar(
+                    BottomBarContents(
                         modifier = Modifier
                             .fillMaxSize(),
                         navController = navController,
@@ -76,22 +91,20 @@ fun NavScreen(
                     )
                 }
 
-                // use a better approach for soft keyboard
-                AnimatedVisibility(
-                    visible = WindowInsets.isImeVisible,
-                    enter = slideInVertically(animationSpec = tween(300)) { height -> height },
-                    exit = slideOutVertically(animationSpec = tween(300)) { height -> height }
-                ) {
-                    Spacer(modifier =
-                    Modifier.height(WindowInsets.ime.asPaddingValues().calculateBottomPadding() - 24.dp))
+                if (WindowInsets.isImeVisible) {
+                    val padding = WindowInsets.ime.asPaddingValues().calculateBottomPadding() - initialInnerPadding.calculateBottomPadding()
+                    Spacer(modifier = Modifier.height(padding))
                 }
             }
         }
-    ) { innerPadding ->
+    ) {
         NavHost(
             navController = navController,
             startDestination = Path.HomeScreen,
-            modifier = Modifier.padding(innerPadding)
+            modifier = Modifier.padding(
+                top = initialInnerPadding.calculateTopPadding(),
+                bottom = bottomBarHeight
+            )
         ) {
             composable<Path.AppsScreen>(
                 enterTransition = {
@@ -112,14 +125,17 @@ fun NavScreen(
                     slideOutVertically { height -> height }
                 }
             ) {
-                GeminiScreen(inputText = viewModel.geminiText)
+                GeminiScreen(
+                    inputText = viewModel.geminiText
+                )
                 viewModel.setScreenState(ScreenState.GEMINI)
             }
             composable<Path.HomeScreen> {
-                HomeScreen(snackbarHostState = snackbarHostState)
+                HomeScreen(
+                    snackbarHostState = snackbarHostState
+                )
                 viewModel.setScreenState(ScreenState.HOME)
             }
         }
     }
-
 }

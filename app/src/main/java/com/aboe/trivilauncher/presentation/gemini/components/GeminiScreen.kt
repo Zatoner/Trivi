@@ -32,6 +32,7 @@ import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 fun GeminiScreen(
+    modifier: Modifier = Modifier,
     inputText: MutableSharedFlow<String>,
     viewModel: GeminiViewModel = hiltViewModel()
 ) {
@@ -53,7 +54,7 @@ fun GeminiScreen(
 //        }
 //    }
 
-    Box(modifier = Modifier.fillMaxSize()) {
+    Box(modifier = modifier.fillMaxSize()) {
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()

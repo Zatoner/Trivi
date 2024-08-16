@@ -47,6 +47,7 @@ import kotlinx.coroutines.withContext
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun HomeScreen(
+    modifier: Modifier = Modifier,
     snackbarHostState : SnackbarHostState,
     viewModel: HomeViewModel = hiltViewModel(),
 ) {
@@ -67,7 +68,7 @@ fun HomeScreen(
                 is HomeUIEvent.ShowSnackbar -> {
                     val snackbarResult = snackbarHostState.showSnackbar(
                         message = event.message,
-                        duration = SnackbarDuration.Short,
+                        duration = SnackbarDuration.Indefinite,
                         actionLabel = "Retry"
                     )
 
@@ -84,7 +85,7 @@ fun HomeScreen(
         }
     }
 
-    Box(modifier = Modifier.fillMaxSize()) {
+    Box(modifier = modifier.fillMaxSize()) {
         LazyColumn(
             verticalArrangement = Arrangement.spacedBy(24.dp),
             modifier = Modifier

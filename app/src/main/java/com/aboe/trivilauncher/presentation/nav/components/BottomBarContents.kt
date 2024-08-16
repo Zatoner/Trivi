@@ -23,7 +23,7 @@ import com.aboe.trivilauncher.presentation.nav.Path
 import com.aboe.trivilauncher.presentation.nav.ScreenState
 
 @Composable
-fun BottomBar(
+fun BottomBarContents(
     modifier: Modifier = Modifier,
     navController: NavHostController,
     screenState: ScreenState,
