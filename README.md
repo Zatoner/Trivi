@@ -64,7 +64,8 @@ Description
 
 # How do I build it?
 
-Description
+To successfully build Trivi on Android Studio you'll need to add 2 API keys to the project. The 2 keys required are a [OpenWeather](https://openweather.co.uk) key
+and [Google Cloud](https://cloud.google.com/?hl=en) key with the [Generative Language API](https://console.cloud.google.com/apis/library/generativelanguage.googleapis.com) enabled.
 
 # What's to come?
 
