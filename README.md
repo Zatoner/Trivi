@@ -44,6 +44,7 @@ Like most traditional Android launchers, Trivi also has a normal app drawer for 
 
 ## Other features
 
+<!-- personallity setting? -->
 For the time being Trivi only has one additional feature worth mentioning: Favourites, which lets you favourite apps and pin them on the home screen.
 
 # How does it work?
@@ -56,9 +57,13 @@ Below I will go over the 2 main technical aspects of Trivi:
 
 ## Gemini
 
+<!-- Gemini Context, prompt given, gemini tweaks, model name, history -->
+
 Description
 
 ## Android
+
+<!-- Attemtp at MVVM + Clean, Retrofit, Room, Dagger Hilt, Notification service, App fetching, Weather -->
 
 Description
 
@@ -66,6 +71,14 @@ Description
 
 To successfully build Trivi on Android Studio you'll need to add 2 API keys to the project. The 2 keys required are a [OpenWeather](https://openweather.co.uk) key
 and [Google Cloud](https://cloud.google.com/?hl=en) key with the [Generative Language API](https://console.cloud.google.com/apis/library/generativelanguage.googleapis.com) enabled.
+Once the keys are acquired, add them to the `local.properties` file found in the root directory of the project. Here's what it's supposed to look like:
+
+```
+geminiKey=KEY
+openWeatherKey=KEY
+```
+
+That should be everything, you should be able to build the project once this step is completed.
 
 # What's to come?
 
