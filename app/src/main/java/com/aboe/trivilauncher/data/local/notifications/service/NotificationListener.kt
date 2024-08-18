@@ -1,4 +1,4 @@
-package com.aboe.trivilauncher.domain.service
+package com.aboe.trivilauncher.data.local.notifications.service
 
 import android.os.Bundle
 import android.service.notification.NotificationListenerService
