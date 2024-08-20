@@ -59,13 +59,30 @@ Below I will go over the 2 main technical aspects of Trivi:
 
 <!-- Gemini Context, prompt given, gemini tweaks, model name, history -->
 
-Description
+For Gemini to accurately provide useful information it is given a wide range of user context with specific prompting to generate informative answers.
+Gemini is currently aware of (if given permission):
+
+- Time
+- User Name
+- User Info (short description that the user input themselves)
+- User Location
+- Current Weather
+- 24 Hour Weather Forecast
+- User Notifications in the Past 12 Hours
+- Top Used Apps by the User
+
+The full prompt and it's other configuration changes can be found in [Constants.kt](app/src/main/java/com/aboe/trivilauncher/common/Constants.kt) and
+[GetGeminiPromptUseCase.kt](app/src/main/java/com/aboe/trivilauncher/domain/use_case/get_gemini_prompt/GetGeminiPromptUseCase.kt).
+
+Trivi currently uses [Gemini 1.5 Flash](https://ai.google.dev/gemini-api/docs/models/gemini#gemini-1.5-flash) for all of it's content due to it's
+speed and relative cheap cost compared to Pro since there's potentially many calls being made (10 minute cooldown for spotlight widget). Additionally,
+Trivi has a history log for follow up chats for better user context.
 
 ## Android
 
 <!-- Attemtp at MVVM + Clean, Retrofit, Room, Dagger Hilt, Notification service, App fetching, Weather -->
 
-Description
+TODO
 
 # How do I build it?
 
@@ -82,8 +99,9 @@ That should be everything, you should be able to build the project once this ste
 
 # What's to come?
 
-Description
+TODO
 
 # Gemini API Developer Competition
 
-Description
+TODO
+[old repo](https://github.com/Zatoner/TriviLauncher)
