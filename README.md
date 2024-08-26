@@ -119,6 +119,10 @@ That should be everything, you should be able to build the project once this ste
 - Better project architecture
 - Widget support?
 
+# Featured on
+
+TODO
+
 # Gemini API Developer Competition
 
 TODO
