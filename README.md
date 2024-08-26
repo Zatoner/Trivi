@@ -82,7 +82,11 @@ Trivi has a history log for follow up chats for better user context.
 
 <!-- Attemtp at MVVM + Clean, Retrofit, Room, Dagger Hilt, Notification service, App fetching, Weather -->
 
-TODO
+As mentioned earlier, one of Trivi's goal was to learn how to make modern Android apps, therefore Trivi attempts to have a MVVM layout + a Clean architecture
+while using Kotlin, Jetpack Compose, Coroutines, Flows, etc... Trivi also leverages Dagger Hilt (dependency injection) to make the codebase less verbose.
+
+All user notifications are stored locally (if given permission) using Room for ease of use while storing and querying data. For API calls to OpenWeather Trivi
+uses Retrofit.
 
 # How do I build it?
 
@@ -99,7 +103,21 @@ That should be everything, you should be able to build the project once this ste
 
 # What's to come?
 
-TODO
+- A proper onboarding screen
+- Search feature in app drawer and other app drawer improvements
+- A settings screen using Data Store instead of SharedPreferences
+- Removing SharedPreferences code
+- Commenting code base for better open source accessibility
+- Grant Trivi access to user's calendar for better recommendations
+- Try out Gemini Nano for offline capabilities and much better user privacy (all local)
+- Use more advanced Gemini features like fine tuning and function calling
+- Dark mode
+- App opening animation
+- Wallpaper support + monet theming
+- Haptics
+- UI Improvements
+- Better project architecture
+- Widget support?
 
 # Gemini API Developer Competition
 
